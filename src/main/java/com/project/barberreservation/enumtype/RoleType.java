@@ -2,6 +2,6 @@ package com.project.barberreservation.enumtype;
 
 public enum RoleType {
     ADMIN,
-    USER,
+    CUSTOMER,
     BARBER
 }
