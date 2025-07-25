@@ -1,4 +1,4 @@
-package com.project.barberreservation;
+package com.project.barberreservation.starter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
