@@ -1,13 +1,11 @@
-package com.project.barberreservation.service;
+package com.project.barberreservation.controller;
 
 import com.project.barberreservation.dto.AuthResponse;
 import com.project.barberreservation.dto.LoginRequest;
 import com.project.barberreservation.dto.RefreshTokenRequest;
 import com.project.barberreservation.dto.RegisterRequest;
-import com.project.barberreservation.entity.RefreshToken;
-import com.project.barberreservation.entity.User;
 
-public interface IAuthService {
+public interface IAuthController {
     public AuthResponse register(RegisterRequest registerRequest);
 
     public AuthResponse login(LoginRequest loginRequest);
