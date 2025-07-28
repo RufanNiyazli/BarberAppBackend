@@ -1,5 +1,6 @@
 package com.project.barberreservation.dto;
 
+import com.project.barberreservation.enumtype.RoleType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,5 +11,6 @@ import lombok.NoArgsConstructor;
 public class AuthResponse {
     String accessToken;
     String refreshToken;
+    RoleType roleType;
 
 }
