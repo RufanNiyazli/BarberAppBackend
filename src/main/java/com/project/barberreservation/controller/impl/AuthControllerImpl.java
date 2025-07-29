@@ -1,10 +1,7 @@
 package com.project.barberreservation.controller.impl;
 
 import com.project.barberreservation.controller.IAuthController;
-import com.project.barberreservation.dto.AuthResponse;
-import com.project.barberreservation.dto.LoginRequest;
-import com.project.barberreservation.dto.RefreshTokenRequest;
-import com.project.barberreservation.dto.RegisterRequest;
+import com.project.barberreservation.dto.*;
 import com.project.barberreservation.service.IAuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,5 +31,19 @@ public class AuthControllerImpl implements IAuthController {
     @PostMapping("/refresh-accessToken")
     public AuthResponse refreshAccessToken(@RequestBody RefreshTokenRequest tokenStr) {
         return authService.refreshAccessToken(tokenStr);
+    }
+
+    @PostMapping("/verify-user")
+    @Override
+    public void verifyUser(@RequestBody VerifyUserDto verifyUserDto) {
+        authService.verifyUser(verifyUserDto);
+    }
+
+    @PostMapping("resend-code")
+    @Override
+    public void resendVerificationCode(@RequestBody String email) {
+        authService.resendVerificationCode(email);
+
+
     }
 }

@@ -24,7 +24,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authenticationProvider;
 
-    private static final String[] PUBLIC_ENDPOINTS = {"/login", "/register", "refresh-accessToken"};
+    private static final String[] PUBLIC_ENDPOINTS = {"/login", "/register", "/refresh-accessToken", "/verify-user", "/resend-code"};
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

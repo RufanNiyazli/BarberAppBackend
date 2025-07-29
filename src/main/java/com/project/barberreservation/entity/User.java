@@ -46,6 +46,11 @@ public class User implements UserDetails {
 
     private LocalDateTime updatedAt;
 
+
+    private LocalDateTime verificationCodeExpiresAt;
+    private String verificationCode;
+    private boolean enabled = false;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RefreshToken> refreshTokens;
 

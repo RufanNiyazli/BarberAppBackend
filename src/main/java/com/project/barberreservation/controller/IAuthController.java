@@ -1,9 +1,6 @@
 package com.project.barberreservation.controller;
 
-import com.project.barberreservation.dto.AuthResponse;
-import com.project.barberreservation.dto.LoginRequest;
-import com.project.barberreservation.dto.RefreshTokenRequest;
-import com.project.barberreservation.dto.RegisterRequest;
+import com.project.barberreservation.dto.*;
 
 public interface IAuthController {
     public AuthResponse register(RegisterRequest registerRequest);
@@ -11,4 +8,8 @@ public interface IAuthController {
     public AuthResponse login(LoginRequest loginRequest);
 
     public AuthResponse refreshAccessToken(RefreshTokenRequest tokenStr);
+
+    public void verifyUser(VerifyUserDto verifyUserDto);
+
+    public void resendVerificationCode(String email);
 }
