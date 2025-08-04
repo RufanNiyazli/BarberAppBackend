@@ -1,7 +1,7 @@
 package com.project.barberreservation.controller.impl;
 
 import com.project.barberreservation.controller.IAuthController;
-import com.project.barberreservation.dto.*;
+import com.project.barberreservation.dto.authDto.*;
 import com.project.barberreservation.service.IAuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

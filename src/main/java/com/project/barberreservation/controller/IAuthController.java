@@ -1,6 +1,6 @@
 package com.project.barberreservation.controller;
 
-import com.project.barberreservation.dto.*;
+import com.project.barberreservation.dto.authDto.*;
 
 public interface IAuthController {
     public AuthResponse register(RegisterRequest registerRequest);

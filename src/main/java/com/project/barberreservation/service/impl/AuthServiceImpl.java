@@ -1,6 +1,6 @@
 package com.project.barberreservation.service.impl;
 
-import com.project.barberreservation.dto.*;
+import com.project.barberreservation.dto.authDto.*;
 import com.project.barberreservation.entity.RefreshToken;
 import com.project.barberreservation.entity.User;
 import com.project.barberreservation.repository.RefreshTokenRepository;
@@ -15,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Optional;
 import java.util.Random;
 

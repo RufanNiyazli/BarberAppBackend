@@ -1,6 +1,6 @@
 package com.project.barberreservation.service;
 
-import com.project.barberreservation.dto.*;
+import com.project.barberreservation.dto.authDto.*;
 
 
 public interface IAuthService {

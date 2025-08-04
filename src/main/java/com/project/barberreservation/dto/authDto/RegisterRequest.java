@@ -1,4 +1,4 @@
-package com.project.barberreservation.dto;
+package com.project.barberreservation.dto.authDto;
 
 import com.project.barberreservation.enumtype.GenderType;
 import com.project.barberreservation.enumtype.RoleType;
