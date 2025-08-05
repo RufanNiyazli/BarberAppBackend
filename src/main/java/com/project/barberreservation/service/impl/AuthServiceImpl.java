@@ -1,8 +1,11 @@
 package com.project.barberreservation.service.impl;
 
 import com.project.barberreservation.dto.authDto.*;
+import com.project.barberreservation.entity.Barber;
 import com.project.barberreservation.entity.RefreshToken;
 import com.project.barberreservation.entity.User;
+import com.project.barberreservation.enumtype.RoleType;
+import com.project.barberreservation.repository.BarberRepository;
 import com.project.barberreservation.repository.RefreshTokenRepository;
 import com.project.barberreservation.repository.UserRepository;
 import com.project.barberreservation.security.JwtService;
@@ -34,12 +37,15 @@ public class AuthServiceImpl implements IAuthService {
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
 
+    private final BarberRepository barberRepository;
+
 
     @Override
     public AuthResponse register(RegisterRequest registerRequest) {
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
             throw new RuntimeException("this email exist");
         }
+
         User user = User.builder()
                 .username(registerRequest.getUsername())
                 .email(registerRequest.getEmail())
@@ -52,6 +58,17 @@ public class AuthServiceImpl implements IAuthService {
                 .updatedAt(LocalDateTime.now())
                 .build();
         User dbUser = userRepository.save(user);
+        if (dbUser.getRole().equals(RoleType.BARBER)) {
+            Barber barber = Barber.builder()
+                    .user(dbUser)
+                    .name(dbUser.getUsername())
+                    .photoUrl(dbUser.getProfilePicture())
+                    .rating(0.0)
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+            barberRepository.save(barber);
+        }
         user.setVerificationCode(generateVerificationCode());
         user.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15));
         user.setEnabled(false);

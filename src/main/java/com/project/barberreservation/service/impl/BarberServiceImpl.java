@@ -88,8 +88,8 @@ public class BarberServiceImpl implements IBarberService {
     }
 
     @Override
-    public BarberDetailDTO updateBarberProfile(Long barberId, Map<String, Object> updates, Long currentUserId) throws JsonMappingException {
-        // 1. Login olmuş user-dan Barber tap
+    public BarberDetailDTO updateBarberProfile(Map<String, Object> updates) throws JsonMappingException {
+
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
