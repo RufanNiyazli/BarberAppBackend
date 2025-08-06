@@ -1,4 +1,4 @@
-package com.project.barberreservation.dto;
+package com.project.barberreservation.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +12,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ScheduleDto {
+public class ScheduleResponse {
     private DayOfWeek dayOfWeek;
     private LocalTime startTime;
     private LocalTime endTime;

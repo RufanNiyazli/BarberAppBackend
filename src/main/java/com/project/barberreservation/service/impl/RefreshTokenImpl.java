@@ -1,6 +1,6 @@
 package com.project.barberreservation.service.impl;
 
-import com.project.barberreservation.dto.authDto.RefreshTokenRequest;
+import com.project.barberreservation.dto.request.RefreshTokenRequest;
 import com.project.barberreservation.entity.RefreshToken;
 import com.project.barberreservation.entity.User;
 import com.project.barberreservation.repository.RefreshTokenRepository;

@@ -23,6 +23,7 @@ public class Service {
     @JoinColumn(name = "barber_id")
     private Barber barber;
 
+    @Enumerated(EnumType.STRING)
     private ServiceType serviceType;
 
     @Column(columnDefinition = "TEXT")

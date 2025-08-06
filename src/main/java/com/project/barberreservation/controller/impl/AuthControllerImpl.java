@@ -1,7 +1,11 @@
 package com.project.barberreservation.controller.impl;
 
 import com.project.barberreservation.controller.IAuthController;
-import com.project.barberreservation.dto.authDto.*;
+import com.project.barberreservation.dto.request.LoginRequest;
+import com.project.barberreservation.dto.request.RefreshTokenRequest;
+import com.project.barberreservation.dto.request.RegisterRequest;
+import com.project.barberreservation.dto.request.VerifyUserRequest;
+import com.project.barberreservation.dto.response.AuthResponse;
 import com.project.barberreservation.service.IAuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,8 +41,8 @@ public class AuthControllerImpl implements IAuthController {
 
     @PostMapping("/verify-user")
     @Override
-    public void verifyUser(@RequestBody VerifyUserDto verifyUserDto) {
-        authService.verifyUser(verifyUserDto);
+    public void verifyUser(@RequestBody VerifyUserRequest verifyUserRequest) {
+        authService.verifyUser(verifyUserRequest);
     }
 
     @PostMapping("resend-code")

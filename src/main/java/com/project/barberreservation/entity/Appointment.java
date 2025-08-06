@@ -42,7 +42,5 @@ public class Appointment {
 
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "appointment")
-    private Review review;
 
 }

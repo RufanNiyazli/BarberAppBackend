@@ -2,8 +2,8 @@ package com.project.barberreservation.controller.impl;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.project.barberreservation.controller.IBarberController;
-import com.project.barberreservation.dto.BarberDetailDTO;
-import com.project.barberreservation.dto.BarberResponse;
+import com.project.barberreservation.dto.response.BarberDetailedResponse;
+import com.project.barberreservation.dto.response.BarberResponse;
 import com.project.barberreservation.service.IBarberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -26,14 +26,14 @@ public class BarberControllerImpl implements IBarberController {
 
     @Override
     @GetMapping("/public/get-barber/{id}")
-    public BarberDetailDTO getBarberById(@PathVariable(name = "id") Long id) {
+    public BarberDetailedResponse getBarberById(@PathVariable(name = "id") Long id) {
         return barberService.getBarberById(id);
     }
 
     @Override
     @PatchMapping("/barber/update-barberProfile/")
 
-    public BarberDetailDTO updateBarberProfile(@RequestBody Map<String, Object> updates) throws JsonMappingException {
+    public BarberDetailedResponse updateBarberProfile(@RequestBody Map<String, Object> updates) throws JsonMappingException {
         return barberService.updateBarberProfile(updates);
     }
 }

@@ -1,6 +1,10 @@
 package com.project.barberreservation.service.impl;
 
-import com.project.barberreservation.dto.authDto.*;
+import com.project.barberreservation.dto.request.LoginRequest;
+import com.project.barberreservation.dto.request.RefreshTokenRequest;
+import com.project.barberreservation.dto.request.RegisterRequest;
+import com.project.barberreservation.dto.request.VerifyUserRequest;
+import com.project.barberreservation.dto.response.AuthResponse;
 import com.project.barberreservation.entity.Barber;
 import com.project.barberreservation.entity.RefreshToken;
 import com.project.barberreservation.entity.User;
@@ -112,14 +116,14 @@ public class AuthServiceImpl implements IAuthService {
     }
 
     @Override
-    public void verifyUser(VerifyUserDto verifyUserDto) {
-        Optional<User> optionalUser = userRepository.findUserByEmail(verifyUserDto.getEmail());
+    public void verifyUser(VerifyUserRequest verifyUserRequest) {
+        Optional<User> optionalUser = userRepository.findUserByEmail(verifyUserRequest.getEmail());
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             if (user.getVerificationCodeExpiresAt().isBefore(LocalDateTime.now())) {
                 throw new RuntimeException("Verification code has expired");
             }
-            if (user.getVerificationCode().equals(verifyUserDto.getVerificationCode())) {
+            if (user.getVerificationCode().equals(verifyUserRequest.getVerificationCode())) {
                 user.setEnabled(true);
                 user.setVerificationCode(null);
                 user.setVerificationCodeExpiresAt(null);

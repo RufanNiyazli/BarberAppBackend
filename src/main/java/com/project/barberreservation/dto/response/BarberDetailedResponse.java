@@ -1,25 +1,28 @@
-package com.project.barberreservation.dto;
+package com.project.barberreservation.dto.response;
 
 import com.project.barberreservation.enumtype.GenderType;
-import com.project.barberreservation.enumtype.ServiceType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BarberResponse {
+public class BarberDetailedResponse {
     private Long id;
     private String name;
     private String photoUrl;
-    private List<ServiceType> serviceTypes;
+    private String location;
+
     private Double rating;
     private GenderType targetGender;
-    private String location;
+
+    private List<ServiceResponse> services;
+    private List<ReviewResponse> reviews;
+
+    private List<ScheduleResponse> schedules;
 }

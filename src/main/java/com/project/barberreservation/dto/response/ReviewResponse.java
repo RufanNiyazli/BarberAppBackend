@@ -1,4 +1,4 @@
-package com.project.barberreservation.dto;
+package com.project.barberreservation.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +11,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReviewDTO {
+public class ReviewResponse {
     private Long id;
+    private String barberName;
     private String customerName;
     private Integer rating;
     private String comment;

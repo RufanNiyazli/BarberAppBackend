@@ -1,4 +1,4 @@
-package com.project.barberreservation.dto.authDto;
+package com.project.barberreservation.dto.response;
 
 import com.project.barberreservation.enumtype.RoleType;
 import lombok.AllArgsConstructor;

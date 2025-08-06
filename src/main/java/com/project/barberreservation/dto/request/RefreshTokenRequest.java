@@ -1,4 +1,4 @@
-package com.project.barberreservation.dto.authDto;
+package com.project.barberreservation.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

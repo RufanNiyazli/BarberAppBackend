@@ -2,7 +2,7 @@ package com.project.barberreservation.service.impl;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.barberreservation.dto.*;
+import com.project.barberreservation.dto.response.*;
 import com.project.barberreservation.entity.Barber;
 import com.project.barberreservation.entity.User;
 import com.project.barberreservation.enumtype.ServiceType;
@@ -38,14 +38,14 @@ public class BarberServiceImpl implements IBarberService {
     }
 
     @Override
-    public BarberDetailDTO getBarberById(Long id) {
+    public BarberDetailedResponse getBarberById(Long id) {
         Optional<Barber> optional = barberRepository.findById(id);
         if (optional.isEmpty()) {
             throw new RuntimeException("This barber notFound!");
         }
         Barber barber = optional.get();
-        List<ServiceDTO> serviceDTOs = barber.getServices().stream()
-                .map(service -> ServiceDTO.builder()
+        List<ServiceResponse> serviceResponses = barber.getServices().stream()
+                .map(service -> ServiceResponse.builder()
                         .id(service.getId())
                         .serviceType(service.getServiceType())
                         .price(service.getPrice())
@@ -53,9 +53,10 @@ public class BarberServiceImpl implements IBarberService {
                         .build())
                 .toList();
 
-        List<ReviewDTO> reviewDTOS = barber.getReviews().stream()
-                .map(review -> ReviewDTO.builder()
+        List<ReviewResponse> reviewResponses = barber.getReviews().stream()
+                .map(review -> ReviewResponse.builder()
                         .id(review.getId())
+                        .barberName(barber.getName())
                         .createdAt(review.getCreatedAt())
                         .comment(review.getComment())
                         .customerName(review.getCustomer().getUsername())
@@ -63,9 +64,9 @@ public class BarberServiceImpl implements IBarberService {
 
                         .build()
                 ).toList();
-        List<ScheduleDto> scheduleDtos = barber.getSchedules().stream()
+        List<ScheduleResponse> scheduleResponses = barber.getSchedules().stream()
                 .map(
-                        schedule -> ScheduleDto.builder()
+                        schedule -> ScheduleResponse.builder()
                                 .endTime(schedule.getEndTime())
                                 .startTime(schedule.getStartTime())
                                 .dayOfWeek(schedule.getDayOfWeek())
@@ -73,22 +74,22 @@ public class BarberServiceImpl implements IBarberService {
                 ).toList();
 
 
-        return BarberDetailDTO.builder()
+        return BarberDetailedResponse.builder()
                 .id(barber.getId())
-                .services(serviceDTOs)
+                .services(serviceResponses)
                 .rating(barber.getRating())
                 .name(barber.getName())
                 .photoUrl(barber.getPhotoUrl())
-                .reviews(reviewDTOS)
-                .schedules(scheduleDtos)
-                .services(serviceDTOs)
+                .reviews(reviewResponses)
+                .schedules(scheduleResponses)
+                .services(serviceResponses)
                 .targetGender(barber.getTargetGender())
                 .location(barber.getLocation())
                 .build();
     }
 
     @Override
-    public BarberDetailDTO updateBarberProfile(Map<String, Object> updates) throws JsonMappingException {
+    public BarberDetailedResponse updateBarberProfile(Map<String, Object> updates) throws JsonMappingException {
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findUserByEmail(email)
@@ -107,8 +108,8 @@ public class BarberServiceImpl implements IBarberService {
         Barber dbBarber = barberRepository.save(barber);
 
         //
-        List<ServiceDTO> serviceDTOs = dbBarber.getServices().stream()
-                .map(service -> ServiceDTO.builder()
+        List<ServiceResponse> serviceResponses = dbBarber.getServices().stream()
+                .map(service -> ServiceResponse.builder()
                         .id(service.getId())
                         .serviceType(service.getServiceType())
                         .price(service.getPrice())
@@ -116,9 +117,10 @@ public class BarberServiceImpl implements IBarberService {
                         .build())
                 .toList();
 
-        List<ReviewDTO> reviewDTOS = dbBarber.getReviews().stream()
-                .map(review -> ReviewDTO.builder()
+        List<ReviewResponse> reviewResponses = dbBarber.getReviews().stream()
+                .map(review -> ReviewResponse.builder()
                         .id(review.getId())
+                        .barberName(barber.getName())
                         .createdAt(review.getCreatedAt())
                         .comment(review.getComment())
                         .customerName(review.getCustomer().getUsername())
@@ -126,23 +128,23 @@ public class BarberServiceImpl implements IBarberService {
 
                         .build()
                 ).toList();
-        List<ScheduleDto> scheduleDtos = dbBarber.getSchedules().stream()
+        List<ScheduleResponse> scheduleResponses = dbBarber.getSchedules().stream()
                 .map(
-                        schedule -> ScheduleDto.builder()
+                        schedule -> ScheduleResponse.builder()
                                 .endTime(schedule.getEndTime())
                                 .startTime(schedule.getStartTime())
                                 .dayOfWeek(schedule.getDayOfWeek())
                                 .build()
                 ).toList();
 
-        return BarberDetailDTO.builder()
+        return BarberDetailedResponse.builder()
                 .id(dbBarber.getId())
-                .services(serviceDTOs)
+                .services(serviceResponses)
                 .rating(dbBarber.getRating())
                 .name(dbBarber.getName())
                 .targetGender(dbBarber.getTargetGender())
-                .schedules(scheduleDtos)
-                .reviews(reviewDTOS)
+                .schedules(scheduleResponses)
+                .reviews(reviewResponses)
                 .location(dbBarber.getLocation())
                 .photoUrl(dbBarber.getPhotoUrl())
 

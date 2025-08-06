@@ -50,7 +50,8 @@ public class User implements UserDetails {
     private LocalDateTime verificationCodeExpiresAt;
     private String verificationCode;
     private boolean enabled = false;
-
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Appointment> appointments;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RefreshToken> refreshTokens;
 

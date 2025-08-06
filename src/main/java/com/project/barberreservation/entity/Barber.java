@@ -31,7 +31,7 @@ public class Barber {
 
     private String photoUrl;
 
-    private String Location;
+    private String location;
 
     private Double rating;
 

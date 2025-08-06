@@ -1,4 +1,4 @@
-package com.project.barberreservation.dto;
+package com.project.barberreservation.dto.response;
 
 import com.project.barberreservation.enumtype.ServiceType;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ServiceDTO {
+public class ServiceResponse {
     private Long id;
     private ServiceType serviceType;
     private String description;
