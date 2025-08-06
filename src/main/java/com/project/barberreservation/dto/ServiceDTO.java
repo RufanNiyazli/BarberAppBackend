@@ -1,5 +1,6 @@
 package com.project.barberreservation.dto;
 
+import com.project.barberreservation.enumtype.ServiceType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ServiceDTO {
     private Long id;
-    private String name;
+    private ServiceType serviceType;
     private String description;
     private Integer durationMinutes;
     private Double price;

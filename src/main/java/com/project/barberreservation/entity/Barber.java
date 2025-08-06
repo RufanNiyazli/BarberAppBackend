@@ -1,7 +1,7 @@
 package com.project.barberreservation.entity;
 
 import com.project.barberreservation.enumtype.GenderType;
-import com.project.barberreservation.enumtype.SpecializationType;
+import com.project.barberreservation.enumtype.ServiceType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,16 +28,10 @@ public class Barber {
 
     private String name;
 
-    @ElementCollection(targetClass = SpecializationType.class)
-    @Enumerated(EnumType.STRING)
-    @CollectionTable(
-            name = "barber_specializations",
-            joinColumns = @JoinColumn(name = "barber_id")
-    )
-    @Column(name = "specialization")
-    private Set<SpecializationType> specializations;
 
     private String photoUrl;
+
+    private String Location;
 
     private Double rating;
 

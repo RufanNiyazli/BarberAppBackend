@@ -1,7 +1,7 @@
 package com.project.barberreservation.dto;
 
 import com.project.barberreservation.enumtype.GenderType;
-import com.project.barberreservation.enumtype.SpecializationType;
+import com.project.barberreservation.enumtype.ServiceType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +18,8 @@ public class BarberDetailDTO {
     private Long id;
     private String name;
     private String photoUrl;
-    private Set<SpecializationType> specializations;
+    private String location;
+
     private Double rating;
     private GenderType targetGender;
 

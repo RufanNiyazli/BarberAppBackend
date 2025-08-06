@@ -1,5 +1,6 @@
 package com.project.barberreservation.entity;
 
+import com.project.barberreservation.enumtype.ServiceType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +23,7 @@ public class Service {
     @JoinColumn(name = "barber_id")
     private Barber barber;
 
-    private String name;
+    private ServiceType serviceType;
 
     @Column(columnDefinition = "TEXT")
     private String description;

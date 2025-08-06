@@ -1,12 +1,13 @@
 package com.project.barberreservation.dto;
 
 import com.project.barberreservation.enumtype.GenderType;
-import com.project.barberreservation.enumtype.SpecializationType;
+import com.project.barberreservation.enumtype.ServiceType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -17,7 +18,8 @@ public class BarberResponse {
     private Long id;
     private String name;
     private String photoUrl;
-    private Set<SpecializationType> specializations;
+    private List<ServiceType> serviceTypes;
     private Double rating;
     private GenderType targetGender;
+    private String location;
 }

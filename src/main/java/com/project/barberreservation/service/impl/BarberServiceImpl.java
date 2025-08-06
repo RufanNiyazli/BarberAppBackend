@@ -5,13 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.barberreservation.dto.*;
 import com.project.barberreservation.entity.Barber;
 import com.project.barberreservation.entity.User;
+import com.project.barberreservation.enumtype.ServiceType;
 import com.project.barberreservation.repository.BarberRepository;
 import com.project.barberreservation.repository.UserRepository;
 import com.project.barberreservation.service.IBarberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -48,7 +47,7 @@ public class BarberServiceImpl implements IBarberService {
         List<ServiceDTO> serviceDTOs = barber.getServices().stream()
                 .map(service -> ServiceDTO.builder()
                         .id(service.getId())
-                        .name(service.getName())
+                        .serviceType(service.getServiceType())
                         .price(service.getPrice())
                         .durationMinutes(service.getDurationMinutes())
                         .build())
@@ -82,8 +81,9 @@ public class BarberServiceImpl implements IBarberService {
                 .photoUrl(barber.getPhotoUrl())
                 .reviews(reviewDTOS)
                 .schedules(scheduleDtos)
-                .specializations(barber.getSpecializations())
+                .services(serviceDTOs)
                 .targetGender(barber.getTargetGender())
+                .location(barber.getLocation())
                 .build();
     }
 
@@ -104,27 +104,65 @@ public class BarberServiceImpl implements IBarberService {
         objectMapper.updateValue(barber, updates);
 
         barber.setUpdatedAt(LocalDateTime.now());
-        barberRepository.save(barber);
+        Barber dbBarber = barberRepository.save(barber);
+
+        //
+        List<ServiceDTO> serviceDTOs = dbBarber.getServices().stream()
+                .map(service -> ServiceDTO.builder()
+                        .id(service.getId())
+                        .serviceType(service.getServiceType())
+                        .price(service.getPrice())
+                        .durationMinutes(service.getDurationMinutes())
+                        .build())
+                .toList();
+
+        List<ReviewDTO> reviewDTOS = dbBarber.getReviews().stream()
+                .map(review -> ReviewDTO.builder()
+                        .id(review.getId())
+                        .createdAt(review.getCreatedAt())
+                        .comment(review.getComment())
+                        .customerName(review.getCustomer().getUsername())
+                        .rating(review.getRating())
+
+                        .build()
+                ).toList();
+        List<ScheduleDto> scheduleDtos = dbBarber.getSchedules().stream()
+                .map(
+                        schedule -> ScheduleDto.builder()
+                                .endTime(schedule.getEndTime())
+                                .startTime(schedule.getStartTime())
+                                .dayOfWeek(schedule.getDayOfWeek())
+                                .build()
+                ).toList();
 
         return BarberDetailDTO.builder()
-                .id(barber.getId())
-                .name(barber.getName())
-                .photoUrl(barber.getPhotoUrl())
-                .targetGender(barber.getTargetGender())
-                .specializations(barber.getSpecializations())
-                .rating(barber.getRating())
+                .id(dbBarber.getId())
+                .services(serviceDTOs)
+                .rating(dbBarber.getRating())
+                .name(dbBarber.getName())
+                .targetGender(dbBarber.getTargetGender())
+                .schedules(scheduleDtos)
+                .reviews(reviewDTOS)
+                .location(dbBarber.getLocation())
+                .photoUrl(dbBarber.getPhotoUrl())
+
                 .build();
     }
 
 
     private BarberResponse convertToBarberResponse(Barber barber) {
+
+        List<ServiceType> serviceTypes = barber.getServices()
+                .stream().map(com.project.barberreservation.entity.Service::getServiceType)
+                .distinct().toList();
         return BarberResponse.builder()
                 .id(barber.getId())
                 .name(barber.getName())
                 .photoUrl(barber.getPhotoUrl())
-                .specializations(barber.getSpecializations())
+                .serviceTypes(serviceTypes)
                 .rating(barber.getRating())
                 .targetGender(barber.getTargetGender())
+                .location(barber.getLocation())
                 .build();
     }
 }
