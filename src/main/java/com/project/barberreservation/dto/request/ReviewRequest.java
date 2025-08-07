@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class ReviewRequest {
-    private String customerName;
+
     private Integer rating;
     private String comment;
-    private LocalDateTime createdAt;
+
 }

@@ -37,7 +37,7 @@ public class Service {
 
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "service")
+    @ManyToMany(mappedBy = "services")
     private List<Appointment> appointments;
 
 

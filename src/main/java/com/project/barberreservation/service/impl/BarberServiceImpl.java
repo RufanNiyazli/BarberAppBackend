@@ -28,7 +28,7 @@ public class BarberServiceImpl implements IBarberService {
 
 
     @Override
-    public List<BarberResponse> getAllBarbers() {
+    public List<BarberResponse> readAllBarbers() {
         List<Barber> optionals = barberRepository.findAll();
 
 
@@ -38,7 +38,7 @@ public class BarberServiceImpl implements IBarberService {
     }
 
     @Override
-    public BarberDetailedResponse getBarberById(Long id) {
+    public BarberDetailedResponse readBarberById(Long id) {
         Optional<Barber> optional = barberRepository.findById(id);
         if (optional.isEmpty()) {
             throw new RuntimeException("This barber notFound!");
@@ -85,6 +85,62 @@ public class BarberServiceImpl implements IBarberService {
                 .services(serviceResponses)
                 .targetGender(barber.getTargetGender())
                 .location(barber.getLocation())
+                .build();
+    }
+
+    @Override
+    public BarberDetailedResponse readBarberProfileForBarbers() {
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Optional<Barber> optional = barberRepository.findByUserId(user.getId());
+        if (optional.isEmpty()) {
+            throw new RuntimeException("Barber not found!");
+        }
+        Barber barber = optional.get();
+
+        List<ServiceResponse> serviceResponses = barber.getServices().stream()
+                .map(service -> ServiceResponse.builder()
+                        .id(service.getId())
+                        .serviceType(service.getServiceType())
+                        .price(service.getPrice())
+                        .durationMinutes(service.getDurationMinutes())
+                        .build())
+                .toList();
+
+        List<ReviewResponse> reviewResponses = barber.getReviews().stream()
+                .map(review -> ReviewResponse.builder()
+                        .id(review.getId())
+                        .barberName(barber.getName())
+                        .createdAt(review.getCreatedAt())
+                        .comment(review.getComment())
+                        .customerName(review.getCustomer().getUsername())
+                        .rating(review.getRating())
+
+                        .build()
+                ).toList();
+        List<ScheduleResponse> scheduleResponses = barber.getSchedules().stream()
+                .map(
+                        schedule -> ScheduleResponse.builder()
+                                .endTime(schedule.getEndTime())
+                                .startTime(schedule.getStartTime())
+                                .dayOfWeek(schedule.getDayOfWeek())
+                                .build()
+                ).toList();
+
+        return BarberDetailedResponse.builder()
+                .id(barber.getId())
+                .services(serviceResponses)
+                .rating(barber.getRating())
+                .targetGender(barber.getTargetGender())
+                .schedules(scheduleResponses)
+                .location(barber.getLocation())
+                .name(barber.getName())
+                .photoUrl(barber.getPhotoUrl())
+                .reviews(reviewResponses)
+
+
                 .build();
     }
 
