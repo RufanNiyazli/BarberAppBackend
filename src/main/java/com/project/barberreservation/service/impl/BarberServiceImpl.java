@@ -89,7 +89,7 @@ public class BarberServiceImpl implements IBarberService {
     }
 
     @Override
-    public BarberDetailedResponse readBarberProfileForBarbers() {
+    public BarberDetailedResponse readBarberProfileForOwnProfile() {
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findUserByEmail(email)

@@ -14,7 +14,7 @@ public interface IBarberService {
 
     public BarberDetailedResponse readBarberById(Long id);
 
-    public BarberDetailedResponse readBarberProfileForBarbers();
+    public BarberDetailedResponse readBarberProfileForOwnProfile();
 
     public BarberDetailedResponse updateBarberProfile(Map<String, Object> updates) throws JsonMappingException;
 }
