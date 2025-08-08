@@ -13,26 +13,30 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-
 public class BarberControllerImpl implements IBarberController {
 
     private final IBarberService barberService;
 
     @Override
-    @GetMapping({"/public/get-barbers", "/barber/get-barbers"})
+    @GetMapping("/public/get-barbers")
     public List<BarberResponse> getAllBarbers() {
-        return barberService.getAllBarbers();
+        return barberService.readAllBarbers();
     }
 
     @Override
     @GetMapping("/public/get-barber/{id}")
     public BarberDetailedResponse getBarberById(@PathVariable(name = "id") Long id) {
-        return barberService.getBarberById(id);
+        return barberService.readBarberById(id);
+    }
+
+    @Override
+    @GetMapping("/barber/profile")
+    public BarberDetailedResponse readBarberProfileForOwnProfile() {
+        return barberService.readBarberProfileForOwnProfile();
     }
 
     @Override
     @PatchMapping("/barber/update-barberProfile/")
-
     public BarberDetailedResponse updateBarberProfile(@RequestBody Map<String, Object> updates) throws JsonMappingException {
         return barberService.updateBarberProfile(updates);
     }

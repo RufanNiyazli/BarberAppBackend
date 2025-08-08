@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @EnableJpaRepositories
 @EntityScan("com.project")
-@ComponentScan("com.project.barberreservation")
+@ComponentScan("com.project")
 public class BarberReservationApplication {
 
     public static void main(String[] args) {

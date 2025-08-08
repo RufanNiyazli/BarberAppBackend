@@ -13,6 +13,8 @@ public interface IBarberController {
 
     public BarberDetailedResponse getBarberById(Long id);
 
+    public BarberDetailedResponse readBarberProfileForOwnProfile();
+
     public BarberDetailedResponse updateBarberProfile(Map<String, Object> updates) throws JsonMappingException;
 
 }

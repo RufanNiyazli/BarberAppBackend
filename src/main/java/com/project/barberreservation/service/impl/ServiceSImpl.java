@@ -15,8 +15,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -61,7 +63,7 @@ public class ServiceSImpl implements IServiceS {
     }
 
     @Override
-    public ServiceResponse updateService(Map<String, Object> updates) throws JsonMappingException {
+    public ServiceResponse updateService(Map<String, Object> updates, Long id) throws JsonMappingException {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -71,7 +73,7 @@ public class ServiceSImpl implements IServiceS {
         }
         Barber barber = optional.get();
 
-        Optional<com.project.barberreservation.entity.Service> optionalService = serviceRepository.findServiceByBarber(barber);
+        Optional<com.project.barberreservation.entity.Service> optionalService = serviceRepository.findServiceByBarberAndId(barber, id);
         if (optionalService.isEmpty()) {
             throw new RuntimeException("Service tapila bilmedi!");
 
@@ -106,12 +108,21 @@ public class ServiceSImpl implements IServiceS {
 
     @Override
     public ServiceResponse readService(Long serviceID) {
-        Optional<com.project.barberreservation.entity.Service> optional = serviceRepository.findById(serviceID);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Optional<Barber> optional = barberRepository.findByUserId(user.getId());
         if (optional.isEmpty()) {
+            throw new RuntimeException("Barber not found!");
+        }
+        Barber barber = optional.get();
+
+        Optional<com.project.barberreservation.entity.Service> optionalService = serviceRepository.findServiceByBarberAndId(barber, serviceID);
+        if (optionalService.isEmpty()) {
             throw new RuntimeException("Service notFound!");
 
         }
-        com.project.barberreservation.entity.Service service = optional.get();
+        com.project.barberreservation.entity.Service service = optionalService.get();
 
         return ServiceResponse.builder()
                 .durationMinutes(service.getDurationMinutes())
@@ -120,5 +131,28 @@ public class ServiceSImpl implements IServiceS {
                 .description(service.getDescription())
                 .id(service.getId())
                 .build();
+    }
+
+    @Override
+    public List<ServiceResponse> readServices() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Optional<Barber> optional = barberRepository.findByUserId(user.getId());
+        if (optional.isEmpty()) {
+            throw new RuntimeException("Barber not found!");
+        }
+        Barber barber = optional.get();
+
+        List<com.project.barberreservation.entity.Service> services = serviceRepository.findServiceByBarber(barber).orElseThrow(() -> new RuntimeException("Services not Found!"));
+        return services.stream()
+                .map(service -> ServiceResponse.builder()
+                        .id(service.getId())
+                        .serviceType(service.getServiceType())
+                        .description(service.getDescription())
+                        .durationMinutes(service.getDurationMinutes())
+                        .price(service.getPrice())
+                        .build())
+                .toList();
     }
 }
