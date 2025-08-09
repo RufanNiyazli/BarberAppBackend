@@ -45,7 +45,7 @@ public class AuthControllerImpl implements IAuthController {
         authService.verifyUser(verifyUserRequest);
     }
 
-    @PostMapping("resend-code")
+    @PostMapping("/resend-code")
     @Override
     public void resendVerificationCode(@RequestBody String email) {
         authService.resendVerificationCode(email);
