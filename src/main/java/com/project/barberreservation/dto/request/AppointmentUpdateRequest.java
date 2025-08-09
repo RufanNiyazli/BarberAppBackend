@@ -1,6 +1,5 @@
-package com.project.barberreservation.dto.response;
+package com.project.barberreservation.dto.request;
 
-import com.project.barberreservation.enumtype.ReservationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,12 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AppointmentResponse {
-    private Long id;
-    private String barberName;
-    private String customerName;
-    private List<ServiceResponse> services;
+public class AppointmentUpdateRequest {
     private LocalDate appointmentDate;
     private LocalTime appointmentTime;
-    private ReservationStatus status;
+    private List<Long> serviceIds;
 }
