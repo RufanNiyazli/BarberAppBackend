@@ -5,8 +5,6 @@ Bu backend həm **customer** (müştəri), həm də **barber** (bərbər) istifa
 Burada customer-lar qeydiyyatdan keçib barber-ə rezervasiya edə, həmçinin barber-lərə ulduz və şərh yaza bilərlər.
 Barber-lər isə özləri haqqında və təqdim etdikləri xidmətlər haqqında məlumat verə bilərlər.
 
-Rufan, sən istəyirsən ki, mən entity-lərdə **hər sahənin tipini** də göstərim, yəni sadəcə nə üçün olduğunu yox, həm də **Java tipi** və **Enum tipi** kimi yazım.
-Sənin kodun əsasında GitHub üçün səliqəli formatda **tip məlumatlı README.md** hazırladım:
 
 ---
 
@@ -921,6 +919,7 @@ Bu API-lər barberlərə xidmətlərini idarə etməkdə tam rahatlıq verir.
 
 
 ---
+
 
 
 
