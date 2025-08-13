@@ -43,7 +43,7 @@ public class ServiceControllerImpl implements IServiceController {
     }
 
     @Override
-    @GetMapping("/public/read-services")
+    @GetMapping("/barber/read-services")
     public List<ServiceResponse> readServices() {
         return serviceS.readServices();
     }
