@@ -42,6 +42,8 @@ public class Barber {
 
     private LocalDateTime updatedAt;
 
+    private Boolean is_available = false;
+
     @OneToMany(mappedBy = "barber")
     private List<Service> services;
 

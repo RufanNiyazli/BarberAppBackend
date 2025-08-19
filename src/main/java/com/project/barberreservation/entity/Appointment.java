@@ -42,6 +42,8 @@ public class Appointment {
 
     private LocalTime appointmentTime;
 
+    private LocalTime appointmentEndTime;
+
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
 

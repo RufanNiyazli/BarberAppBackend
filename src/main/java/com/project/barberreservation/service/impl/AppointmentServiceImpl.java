@@ -3,7 +3,6 @@ package com.project.barberreservation.service.impl;
 import com.project.barberreservation.dto.request.AppointmentRequest;
 import com.project.barberreservation.dto.request.AppointmentUpdateRequest;
 import com.project.barberreservation.dto.response.AppointmentResponse;
-import com.project.barberreservation.dto.response.BarberResponse;
 import com.project.barberreservation.dto.response.ServiceResponse;
 import com.project.barberreservation.entity.Appointment;
 import com.project.barberreservation.entity.Barber;
@@ -19,8 +18,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,9 +39,16 @@ public class AppointmentServiceImpl implements IAppointmentService {
 
         List<com.project.barberreservation.entity.Service> services = serviceRepository.findAllById(appointmentRequest.getServiceIds());
 
+
         if (services.isEmpty()) {
             throw new RuntimeException("No valid services found for given IDs");
         }
+        Integer totalDuration = services.stream()
+                .filter(s -> s.getDurationMinutes() != null)
+                .mapToInt(com.project.barberreservation.entity.Service::getDurationMinutes)
+                .sum();
+        LocalTime endTime = appointmentRequest.getAppointmentTime().plusMinutes(totalDuration);
+
 
         Barber barber = barberRepository.findById(appointmentRequest.getBarberId()).orElseThrow(() -> new RuntimeException("Barber not found!"));
 
@@ -50,6 +56,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
         Appointment appointment = Appointment.builder()
                 .appointmentDate(appointmentRequest.getAppointmentDate())
                 .appointmentTime(appointmentRequest.getAppointmentTime())
+                .appointmentEndTime(endTime)
                 .services(services)
                 .updatedAt(LocalDateTime.now())
                 .createdAt(LocalDateTime.now())
@@ -130,6 +137,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
                 .id(appointment.getId())
                 .appointmentDate(appointment.getAppointmentDate())
                 .appointmentTime(appointment.getAppointmentTime())
+                .appointmentEndTime(appointment.getAppointmentEndTime())
                 .barberName(appointment.getBarber().getName())
                 .customerName(appointment.getCustomer().getUsername())
                 .status(appointment.getStatus())

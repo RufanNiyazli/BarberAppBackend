@@ -203,6 +203,7 @@ public class BarberServiceImpl implements IBarberService {
                 .reviews(reviewResponses)
                 .location(dbBarber.getLocation())
                 .photoUrl(dbBarber.getPhotoUrl())
+                .is_available(dbBarber.getIs_available())
 
                 .build();
     }

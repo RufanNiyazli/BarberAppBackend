@@ -52,7 +52,7 @@ public class ReviewServiceImpl implements IReviewService {
                 .build();
 
         Review savedReview = reviewRepository.save(review);
-        //Ortalam ratingi yazir barb cedveline
+
         Double averageRating = reviewRepository.findAverageRatingByBarberId(barber.getId());
         barber.setRating(averageRating);
         barberRepository.save(barber);
@@ -71,7 +71,7 @@ public class ReviewServiceImpl implements IReviewService {
         boolean hasRating = reviewRequest.getRating() != null;
         boolean hasComment = reviewRequest.getComment() != null;
         if (!hasRating && hasComment) {
-            throw new IllegalArgumentException("If Coment have , Rating will have to");
+            throw new IllegalArgumentException("If Comment have , Rating will have to");
 
         }
         if (!hasRating && !hasComment) {

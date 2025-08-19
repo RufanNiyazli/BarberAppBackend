@@ -25,4 +25,5 @@ public class BarberDetailedResponse {
     private List<ReviewResponse> reviews;
 
     private List<ScheduleResponse> schedules;
+    private Boolean is_available;
 }

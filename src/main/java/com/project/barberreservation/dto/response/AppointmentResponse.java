@@ -21,5 +21,6 @@ public class AppointmentResponse {
     private List<ServiceResponse> services;
     private LocalDate appointmentDate;
     private LocalTime appointmentTime;
+    private LocalTime appointmentEndTime;
     private ReservationStatus status;
 }
