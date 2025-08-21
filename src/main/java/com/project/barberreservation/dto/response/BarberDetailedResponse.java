@@ -15,7 +15,8 @@ import java.util.List;
 public class BarberDetailedResponse {
     private Long id;
     private String name;
-    private String photoUrl;
+    private String profilePhotoUrl;
+    private List<String> galleryPhotos;
     private String location;
 
     private Double rating;
@@ -23,7 +24,6 @@ public class BarberDetailedResponse {
 
     private List<ServiceResponse> services;
     private List<ReviewResponse> reviews;
-
     private List<ScheduleResponse> schedules;
     private Boolean is_available;
 }

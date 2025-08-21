@@ -40,7 +40,6 @@ public class User implements UserDetails {
 
     private String phoneNumber;
 
-    private String profilePicture;
 
     private LocalDateTime createdAt;
 

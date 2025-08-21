@@ -79,7 +79,6 @@ public class BarberServiceImpl implements IBarberService {
                 .services(serviceResponses)
                 .rating(barber.getRating())
                 .name(barber.getName())
-                .photoUrl(barber.getPhotoUrl())
                 .reviews(reviewResponses)
                 .schedules(scheduleResponses)
                 .services(serviceResponses)
@@ -137,7 +136,6 @@ public class BarberServiceImpl implements IBarberService {
                 .schedules(scheduleResponses)
                 .location(barber.getLocation())
                 .name(barber.getName())
-                .photoUrl(barber.getPhotoUrl())
                 .reviews(reviewResponses)
 
 
@@ -202,7 +200,6 @@ public class BarberServiceImpl implements IBarberService {
                 .schedules(scheduleResponses)
                 .reviews(reviewResponses)
                 .location(dbBarber.getLocation())
-                .photoUrl(dbBarber.getPhotoUrl())
                 .is_available(dbBarber.getIs_available())
 
                 .build();
@@ -217,7 +214,6 @@ public class BarberServiceImpl implements IBarberService {
         return BarberResponse.builder()
                 .id(barber.getId())
                 .name(barber.getName())
-                .photoUrl(barber.getPhotoUrl())
                 .serviceTypes(serviceTypes)
                 .rating(barber.getRating())
                 .targetGender(barber.getTargetGender())

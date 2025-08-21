@@ -16,8 +16,8 @@ import java.util.List;
 public class BarberResponse {
     private Long id;
     private String name;
-    private String photoUrl;
-    private List<ServiceType> serviceTypes;
+    private String profilePhotoUrl;
+    private List<com.project.barberreservation.enumtype.ServiceType> serviceTypes;
     private Double rating;
     private GenderType targetGender;
     private String location;

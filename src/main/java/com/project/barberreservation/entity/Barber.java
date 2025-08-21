@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -29,7 +30,13 @@ public class Barber {
     private String name;
 
 
-    private String photoUrl;
+    private String profilePhotoUrl;
+
+    @ElementCollection
+    @CollectionTable(name = "barber_gallery", joinColumns = @JoinColumn(name = "barber_id"))
+    @Column(name = "photo_url")
+    @Builder.Default
+    private List<String> galleryPhotos = new ArrayList<>();
 
     private String location;
 

@@ -57,7 +57,6 @@ public class AuthServiceImpl implements IAuthService {
                 .role(registerRequest.getRole())
                 .gender(registerRequest.getGender())
                 .phoneNumber(registerRequest.getPhoneNumber())
-                .profilePicture(registerRequest.getProfilePicture())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
@@ -66,9 +65,9 @@ public class AuthServiceImpl implements IAuthService {
             Barber barber = Barber.builder()
                     .user(dbUser)
                     .name(dbUser.getUsername())
-                    .photoUrl(dbUser.getProfilePicture())
                     .rating(0.0)
                     .createdAt(LocalDateTime.now())
+
                     .updatedAt(LocalDateTime.now())
                     .build();
             barberRepository.save(barber);
