@@ -6,8 +6,11 @@ import com.project.barberreservation.dto.response.BarberDetailedResponse;
 import com.project.barberreservation.dto.response.BarberResponse;
 import com.project.barberreservation.service.IBarberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -36,8 +39,13 @@ public class BarberControllerImpl implements IBarberController {
     }
 
     @Override
-    @PatchMapping("/barber/update-barberProfile/")
-    public BarberDetailedResponse updateBarberProfile(@RequestBody Map<String, Object> updates) throws JsonMappingException {
-        return barberService.updateBarberProfile(updates);
+    @PatchMapping(value = "/barber/update-barberProfile/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public BarberDetailedResponse updateBarberProfile(
+            @RequestPart(required = false) Map<String, Object> updates,
+            @RequestPart(required = false) MultipartFile profilePhoto,
+            @RequestPart(required = false) MultipartFile[] galleryPhotos
+    ) throws IOException {
+        return barberService.updateBarberProfile(updates, profilePhoto, galleryPhotos);
     }
+
 }

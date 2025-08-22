@@ -9,10 +9,14 @@ import com.project.barberreservation.enumtype.ServiceType;
 import com.project.barberreservation.repository.BarberRepository;
 import com.project.barberreservation.repository.UserRepository;
 import com.project.barberreservation.service.IBarberService;
+import com.project.barberreservation.util.FileStorageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +29,7 @@ public class BarberServiceImpl implements IBarberService {
     private final BarberRepository barberRepository;
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
+    private final FileStorageUtil fileStorageUtil;
 
 
     @Override
@@ -143,20 +148,35 @@ public class BarberServiceImpl implements IBarberService {
     }
 
     @Override
-    public BarberDetailedResponse updateBarberProfile(Map<String, Object> updates) throws JsonMappingException {
+    public BarberDetailedResponse updateBarberProfile(Map<String, Object> updates,
+                                                      MultipartFile profilePhoto,
+                                                      MultipartFile[] galleryPhotos) throws IOException {
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Optional<Barber> optional = barberRepository.findByUserId(user.getId());
-        if (optional.isEmpty()) {
-            throw new RuntimeException("Barber not found!");
+        Barber barber = barberRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new RuntimeException("Barber not found!"));
+
+
+        if (updates != null) {
+            objectMapper.updateValue(barber, updates);
         }
-        Barber barber = optional.get();
+        if (!profilePhoto.isEmpty()) {
+            String profilePhotoUrl = fileStorageUtil.saveProfilePhoto(profilePhoto);
+            barber.setProfilePhotoUrl(profilePhotoUrl);
 
+        }
+        if (galleryPhotos != null) {
+            for (MultipartFile file : galleryPhotos) {
+                if (!file.isEmpty()) {
+                    String url = fileStorageUtil.saveGalleryPhotos(file);
+                    barber.getGalleryPhotos().add(url);
+                }
+            }
 
-        objectMapper.updateValue(barber, updates);
+        }
 
         barber.setUpdatedAt(LocalDateTime.now());
         Barber dbBarber = barberRepository.save(barber);
@@ -196,6 +216,8 @@ public class BarberServiceImpl implements IBarberService {
                 .services(serviceResponses)
                 .rating(dbBarber.getRating())
                 .name(dbBarber.getName())
+                .profilePhotoUrl(dbBarber.getProfilePhotoUrl())
+                .galleryPhotos(dbBarber.getGalleryPhotos())
                 .targetGender(dbBarber.getTargetGender())
                 .schedules(scheduleResponses)
                 .reviews(reviewResponses)
@@ -214,6 +236,7 @@ public class BarberServiceImpl implements IBarberService {
         return BarberResponse.builder()
                 .id(barber.getId())
                 .name(barber.getName())
+                .profilePhotoUrl(barber.getProfilePhotoUrl())
                 .serviceTypes(serviceTypes)
                 .rating(barber.getRating())
                 .targetGender(barber.getTargetGender())

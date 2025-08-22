@@ -1,7 +1,6 @@
 package com.project.barberreservation.entity;
 
 import com.project.barberreservation.enumtype.GenderType;
-import com.project.barberreservation.enumtype.ServiceType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +10,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "barber")

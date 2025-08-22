@@ -22,14 +22,14 @@ public class FileStorageUtil {
 
     private final long MAX_FILE_SIZE = 250L * 1024 * 1024;
 
-    private String saveProfilePhoto(MultipartFile file) throws IOException {
+    public String saveProfilePhoto(MultipartFile file) throws IOException {
         validateFileSize(file);
         return saveFile(file, profileDir);
     }
 
-    private String saveGalleryPhotos(MultipartFile file) throws IOException {
+    public String saveGalleryPhotos(MultipartFile file) throws IOException {
         validateFileSize(file);
-        return saveFile(file, profileDir);
+        return saveFile(file, galleryDir);
     }
 
     private void validateFileSize(MultipartFile file) {
