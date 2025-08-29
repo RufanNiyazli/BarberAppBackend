@@ -1,28 +1,44 @@
 package com.project.barberreservation.service.impl;
 
 import com.project.barberreservation.service.IEmailService;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import com.sendgrid.*;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 @Service
 public class EmailService implements IEmailService {
-    @Autowired
-    private JavaMailSender javaMailSender;
+
+    @Value("${sendgrid.api.key}")
+    private String sendGridApiKey;
+
+    @Value("${spring.mail.from}")
+    private String fromEmail;
 
     @Override
-    public void sendVerificationEmail(String to, String subject, String text) throws MessagingException {
-        MimeMessage mailMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mailMessage, true);
+    public void sendVerificationEmail(String to, String subject, String text) {
+        Email from = new Email(fromEmail);
+        Email toEmail = new Email(to);
+        Content content = new Content("text/html", text);
+        Mail mail = new Mail(from, subject, toEmail, content);
 
-        helper.setTo(to);
-        helper.setSubject(subject);
-        helper.setText(text, true);
-        javaMailSender.send(mailMessage);
+        SendGrid sg = new SendGrid(sendGridApiKey);
+        Request request = new Request();
+        try {
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
+            sg.api(request);
+            Response response = sg.api(request);
+            System.out.println("SendGrid Response: " + response.getStatusCode());
+            System.out.println("Body: " + response.getBody());
+            System.out.println("Headers: " + response.getHeaders());
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to send email via SendGrid", e);
+        }
     }
 }

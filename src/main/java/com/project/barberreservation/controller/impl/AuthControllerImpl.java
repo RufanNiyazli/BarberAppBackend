@@ -7,6 +7,7 @@ import com.project.barberreservation.dto.request.RegisterRequest;
 import com.project.barberreservation.dto.request.VerifyUserRequest;
 import com.project.barberreservation.dto.response.AuthResponse;
 import com.project.barberreservation.service.IAuthService;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -23,7 +24,7 @@ public class AuthControllerImpl implements IAuthController {
 
     @PostMapping("/register")
     @Override
-    public AuthResponse register(@Valid @RequestBody RegisterRequest registerRequest) {
+    public AuthResponse register(@Valid @RequestBody RegisterRequest registerRequest) throws MessagingException {
         return authService.register(registerRequest);
     }
 
@@ -47,7 +48,7 @@ public class AuthControllerImpl implements IAuthController {
 
     @PostMapping("/resend-code")
     @Override
-    public void resendVerificationCode(@RequestBody String email) {
+    public void resendVerificationCode(@RequestBody String email) throws MessagingException {
         authService.resendVerificationCode(email);
 
 

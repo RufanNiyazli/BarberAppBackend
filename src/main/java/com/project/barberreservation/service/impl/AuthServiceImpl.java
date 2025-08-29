@@ -14,6 +14,7 @@ import com.project.barberreservation.repository.RefreshTokenRepository;
 import com.project.barberreservation.repository.UserRepository;
 import com.project.barberreservation.security.JwtService;
 import com.project.barberreservation.service.IAuthService;
+import com.project.barberreservation.service.IEmailService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,8 +28,6 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
-
-
 public class AuthServiceImpl implements IAuthService {
     private final PasswordEncoder passwordEncoder;
 
@@ -39,13 +38,13 @@ public class AuthServiceImpl implements IAuthService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final AuthenticationManager authenticationManager;
-    private final EmailService emailService;
+    private final IEmailService emailService;
 
     private final BarberRepository barberRepository;
 
 
     @Override
-    public AuthResponse register(RegisterRequest registerRequest) {
+    public AuthResponse register(RegisterRequest registerRequest) throws MessagingException {
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
             throw new RuntimeException("this email exist");
         }
@@ -137,7 +136,7 @@ public class AuthServiceImpl implements IAuthService {
     }
 
     @Override
-    public void resendVerificationCode(String email) {
+    public void resendVerificationCode(String email) throws MessagingException {
         Optional<User> optionalUser = userRepository.findUserByEmail(email);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -157,7 +156,7 @@ public class AuthServiceImpl implements IAuthService {
 
     }
 
-    private void sendVerificationEmail(User user) {
+    private void sendVerificationEmail(User user) throws MessagingException {
         String subject = "Account Verification";
         String verificationCode = "VERIFICATION CODE " + user.getVerificationCode();
         String htmlMessage = "<html>"
@@ -173,12 +172,7 @@ public class AuthServiceImpl implements IAuthService {
                 + "</body>"
                 + "</html>";
 
-        try {
-            emailService.sendVerificationEmail(user.getEmail(), subject, htmlMessage);
-
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
+        emailService.sendVerificationEmail(user.getEmail(), subject, htmlMessage);
 
     }
 
