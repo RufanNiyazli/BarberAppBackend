@@ -26,10 +26,7 @@ public class Barber {
     private User user;
 
     private String name;
-
-
     private String profilePhotoUrl;
-
     @ElementCollection
     @CollectionTable(name = "barber_gallery", joinColumns = @JoinColumn(name = "barber_id"))
     @Column(name = "photo_url")

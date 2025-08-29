@@ -10,7 +10,6 @@ import com.project.barberreservation.service.IAuthService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,7 +49,5 @@ public class AuthControllerImpl implements IAuthController {
     @Override
     public void resendVerificationCode(@RequestBody String email) throws MessagingException {
         authService.resendVerificationCode(email);
-
-
     }
 }

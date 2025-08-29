@@ -30,18 +30,13 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements IAuthService {
     private final PasswordEncoder passwordEncoder;
-
     private final RefreshTokenImpl refreshTokenService;
-
     private final JwtService jwtService;
-
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final AuthenticationManager authenticationManager;
     private final IEmailService emailService;
-
     private final BarberRepository barberRepository;
-
 
     @Override
     public AuthResponse register(RegisterRequest registerRequest) throws MessagingException {
@@ -60,22 +55,23 @@ public class AuthServiceImpl implements IAuthService {
                 .updatedAt(LocalDateTime.now())
                 .build();
         User dbUser = userRepository.save(user);
+
         if (dbUser.getRole().equals(RoleType.BARBER)) {
             Barber barber = Barber.builder()
                     .user(dbUser)
                     .name(dbUser.getUsername())
                     .rating(0.0)
                     .createdAt(LocalDateTime.now())
-
                     .updatedAt(LocalDateTime.now())
                     .build();
             barberRepository.save(barber);
         }
+
         user.setVerificationCode(generateVerificationCode());
         user.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15));
         user.setEnabled(false);
-        sendVerificationEmail(user);
 
+        sendVerificationEmail(user);
 
         String accessToken = jwtService.generateToken(dbUser);
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(dbUser);
@@ -88,18 +84,19 @@ public class AuthServiceImpl implements IAuthService {
     public AuthResponse login(LoginRequest loginRequest) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
+
         Optional<User> optionalUser = userRepository.findUserByEmail(loginRequest.getEmail());
         if (optionalUser.isEmpty()) {
             throw new RuntimeException("User not found!");
         }
+
         String accessToken = jwtService.generateToken(optionalUser.get());
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(optionalUser.get());
-
         refreshTokenRepository.save(refreshToken);
+
         return new AuthResponse(accessToken, refreshToken.getToken(), optionalUser.get().getRole());
     }
 
@@ -108,7 +105,6 @@ public class AuthServiceImpl implements IAuthService {
         RefreshToken refreshToken = refreshTokenService.validateRefreshToken(tokenStr);
         User user = refreshToken.getUser();
         String newAccessToken = jwtService.generateToken(user);
-
 
         return new AuthResponse(newAccessToken, refreshToken.getToken(), user.getRole());
     }
@@ -132,7 +128,6 @@ public class AuthServiceImpl implements IAuthService {
         } else {
             throw new RuntimeException("User not found");
         }
-
     }
 
     @Override
@@ -145,20 +140,18 @@ public class AuthServiceImpl implements IAuthService {
             }
             user.setVerificationCode(generateVerificationCode());
             user.setVerificationCodeExpiresAt(LocalDateTime.now().plusHours(1));
+
             sendVerificationEmail(user);
             userRepository.save(user);
-
-
         } else {
             throw new RuntimeException("User not found");
         }
-
-
     }
 
     private void sendVerificationEmail(User user) throws MessagingException {
         String subject = "Account Verification";
-        String verificationCode = "VERIFICATION CODE " + user.getVerificationCode();
+        String verificationCode = user.getVerificationCode();
+
         String htmlMessage = "<html>"
                 + "<body style=\"font-family: Arial, sans-serif;\">"
                 + "<div style=\"background-color: #f5f5f5; padding: 20px;\">"
@@ -173,7 +166,6 @@ public class AuthServiceImpl implements IAuthService {
                 + "</html>";
 
         emailService.sendVerificationEmail(user.getEmail(), subject, htmlMessage);
-
     }
 
     private String generateVerificationCode() {
