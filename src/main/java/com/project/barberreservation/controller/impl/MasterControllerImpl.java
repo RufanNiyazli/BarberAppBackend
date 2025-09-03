@@ -2,7 +2,7 @@ package com.project.barberreservation.controller.impl;
 
 import com.project.barberreservation.controller.IMasterController;
 import com.project.barberreservation.dto.response.MasterDetailedResponse;
-import com.project.barberreservation.dto.response.BarberResponse;
+import com.project.barberreservation.dto.response.MasterResponse;
 import com.project.barberreservation.service.IMasterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -17,34 +17,34 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MasterControllerImpl implements IMasterController {
 
-    private final IMasterService barberService;
+    private final IMasterService masterService;
 
     @Override
-    @GetMapping("/public/get-barbers")
-    public List<BarberResponse> getAllBarbers() {
-        return barberService.readAllBarbers();
+    @GetMapping("/public/get-masters")
+    public List<MasterResponse> getAllMasters() {
+        return masterService.readAllMasters();
     }
 
     @Override
-    @GetMapping("/public/get-barber/{id}")
-    public MasterDetailedResponse getBarberById(@PathVariable(name = "id") Long id) {
-        return barberService.readBarberById(id);
+    @GetMapping("/public/get-master/{id}")
+    public MasterDetailedResponse getMasterById(@PathVariable(name = "id") Long id) {
+        return masterService.readMasterById(id);
     }
 
     @Override
-    @GetMapping("/barber/profile")
-    public MasterDetailedResponse readBarberProfileForOwnProfile() {
-        return barberService.readBarberProfileForOwnProfile();
+    @GetMapping("/master/profile")
+    public MasterDetailedResponse readMasterProfileForOwnProfile() {
+        return masterService.readMasterProfileForOwnProfile();
     }
 
     @Override
-    @PatchMapping(value = "/barber/update-barberProfile/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public MasterDetailedResponse updateBarberProfile(
+    @PatchMapping(value = "/master/update-masterProfile/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public MasterDetailedResponse updateMasterProfile(
             @RequestPart(required = false) Map<String, Object> updates,
             @RequestPart(required = false) MultipartFile profilePhoto,
             @RequestPart(required = false) MultipartFile[] galleryPhotos
     ) throws IOException {
-        return barberService.updateBarberProfile(updates, profilePhoto, galleryPhotos);
+        return masterService.updateMasterProfile(updates, profilePhoto, galleryPhotos);
     }
 
 }

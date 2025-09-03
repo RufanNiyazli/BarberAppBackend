@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.barberreservation.dto.request.ServiceRequest;
 import com.project.barberreservation.dto.response.ServiceResponse;
-import com.project.barberreservation.entity.Barber;
+import com.project.barberreservation.entity.Master;
 import com.project.barberreservation.entity.User;
-import com.project.barberreservation.repository.BarberRepository;
+import com.project.barberreservation.repository.MasterRepository;
 import com.project.barberreservation.repository.ServiceRepository;
 import com.project.barberreservation.repository.UserRepository;
 import com.project.barberreservation.service.IServiceS;
@@ -18,12 +18,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ServiceSImpl implements IServiceS {
-    private final BarberRepository barberRepository;
+    private final MasterRepository masterRepository;
     private final ServiceRepository serviceRepository;
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
@@ -35,18 +34,18 @@ public class ServiceSImpl implements IServiceS {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        Optional<Barber> optional = barberRepository.findByUserId(user.getId());
+        Optional<Master> optional = masterRepository.findByUserId(user.getId());
         if (optional.isEmpty()) {
-            throw new RuntimeException("Barber not found!");
+            throw new RuntimeException("Master not found!");
         }
-        Barber barber = optional.get();
+        Master master = optional.get();
         com.project.barberreservation.entity.Service service = com.project.barberreservation.entity.Service.builder()
                 .createdAt(LocalDateTime.now())
                 .serviceType(serviceRequest.getServiceType())
                 .price(serviceRequest.getPrice())
                 .updatedAt(LocalDateTime.now())
                 .durationMinutes(serviceRequest.getDurationMinutes())
-                .barber(barber)
+                .master(master)
                 .description(serviceRequest.getDescription())
                 .build();
 
@@ -67,13 +66,13 @@ public class ServiceSImpl implements IServiceS {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        Optional<Barber> optional = barberRepository.findByUserId(user.getId());
+        Optional<Master> optional = masterRepository.findByUserId(user.getId());
         if (optional.isEmpty()) {
-            throw new RuntimeException("Barber not found!");
+            throw new RuntimeException("Master not found!");
         }
-        Barber barber = optional.get();
+        Master master = optional.get();
 
-        Optional<com.project.barberreservation.entity.Service> optionalService = serviceRepository.findServiceByBarberAndId(barber, id);
+        Optional<com.project.barberreservation.entity.Service> optionalService = serviceRepository.findServiceByMasterAndId(master, id);
         if (optionalService.isEmpty()) {
             throw new RuntimeException("Service tapila bilmedi!");
 
@@ -111,13 +110,13 @@ public class ServiceSImpl implements IServiceS {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        Optional<Barber> optional = barberRepository.findByUserId(user.getId());
+        Optional<Master> optional = masterRepository.findByUserId(user.getId());
         if (optional.isEmpty()) {
-            throw new RuntimeException("Barber not found!");
+            throw new RuntimeException("Master not found!");
         }
-        Barber barber = optional.get();
+        Master master = optional.get();
 
-        Optional<com.project.barberreservation.entity.Service> optionalService = serviceRepository.findServiceByBarberAndId(barber, serviceID);
+        Optional<com.project.barberreservation.entity.Service> optionalService = serviceRepository.findServiceByMasterAndId(master, serviceID);
         if (optionalService.isEmpty()) {
             throw new RuntimeException("Service notFound!");
 
@@ -138,13 +137,13 @@ public class ServiceSImpl implements IServiceS {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        Optional<Barber> optional = barberRepository.findByUserId(user.getId());
+        Optional<Master> optional = masterRepository.findByUserId(user.getId());
         if (optional.isEmpty()) {
-            throw new RuntimeException("Barber not found!");
+            throw new RuntimeException("Master not found!");
         }
-        Barber barber = optional.get();
+        Master master = optional.get();
 
-        List<com.project.barberreservation.entity.Service> services = serviceRepository.findServiceByBarber(barber).orElseThrow(() -> new RuntimeException("Services not Found!"));
+        List<com.project.barberreservation.entity.Service> services = serviceRepository.findServiceByMaster(master).orElseThrow(() -> new RuntimeException("Services not Found!"));
         return services.stream()
                 .map(service -> ServiceResponse.builder()
                         .id(service.getId())

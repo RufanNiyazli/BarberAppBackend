@@ -26,8 +26,8 @@ public class Review {
     private User customer;
 
     @ManyToOne
-    @JoinColumn(name = "barber_id")
-    private Barber barber;
+    @JoinColumn(name = "master_id")
+    private Master master;
 
     private Integer rating;
 

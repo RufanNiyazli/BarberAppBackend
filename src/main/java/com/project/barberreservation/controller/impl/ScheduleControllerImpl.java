@@ -15,20 +15,20 @@ import java.util.Map;
 public class ScheduleControllerImpl implements IScheduleController {
     private final IScheduleService scheduleService;
 
-    @PostMapping("/barber/create-schedule")
+    @PostMapping("/master/create-schedule")
     @Override
     public ScheduleResponse createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
         return scheduleService.createSchedule(scheduleRequest);
     }
 
     @Override
-    @PatchMapping("/barber/update-schedule/{id}")
+    @PatchMapping("/master/update-schedule/{id}")
     public ScheduleResponse updateSchedule(@PathVariable(name = "id") Long scheduleId, @RequestBody Map<String, Object> updates) throws JsonMappingException {
         return scheduleService.updateSchedule(scheduleId, updates);
     }
 
     @Override
-    @DeleteMapping("/barber/delete-schedule/{id}")
+    @DeleteMapping("/master/delete-schedule/{id}")
     public void deleteSchedule(@PathVariable(name = "id") Long scheduleId) {
         scheduleService.deleteSchedule(scheduleId);
 

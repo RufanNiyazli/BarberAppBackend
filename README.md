@@ -1,8 +1,8 @@
 
 # Barber App Backend
 
-Bu backend həm **customer** (müştəri), həm də **barber** (bərbər) istifadəçilər üçün nəzərdə tutulmuşdur.
-Burada customer-lar qeydiyyatdan keçib barber-ə rezervasiya edə, həmçinin barber-lərə ulduz və şərh yaza bilərlər.
+Bu backend həm **customer** (müştəri), həm də **master** (bərbər) istifadəçilər üçün nəzərdə tutulmuşdur.
+Burada customer-lar qeydiyyatdan keçib master-ə rezervasiya edə, həmçinin master-lərə ulduz və şərh yaza bilərlər.
 Barber-lər isə özləri haqqında və təqdim etdikləri xidmətlər haqqında məlumat verə bilərlər.
 
 
@@ -40,7 +40,7 @@ Barber-lər isə özləri haqqında və təqdim etdikləri xidmətlər haqqında
 
 ### 2. **Barber**
 
-**Cədvəl:** `barber`
+**Cədvəl:** `master`
 
 | Sahə           | Tip                   | İzah                          |
 | -------------- | --------------------- | ----------------------------- |
@@ -71,7 +71,7 @@ Barber-lər isə özləri haqqında və təqdim etdikləri xidmətlər haqqında
 | ----------------- | ---------------------------- | --------------------------- |
 | `id`              | `Long`                       | Unikal identifikator        |
 | `customer`        | `User`                       | Rezervasiya edən istifadəçi |
-| `barber`          | `Barber`                     | Rezervasiya olunan bərbər   |
+| `master`          | `Barber`                     | Rezervasiya olunan bərbər   |
 | `services`        | `List<Service>`              | Seçilmiş xidmətlər          |
 | `appointmentDate` | `LocalDate`                  | Tarix                       |
 | `appointmentTime` | `LocalTime`                  | Saat                        |
@@ -88,7 +88,7 @@ Barber-lər isə özləri haqqında və təqdim etdikləri xidmətlər haqqında
 | Sahə              | Tip                    | İzah                       |
 | ----------------- | ---------------------- | -------------------------- |
 | `id`              | `Long`                 | Unikal identifikator       |
-| `barber`          | `Barber`               | Xidmət sahibi bərbər       |
+| `master`          | `Barber`               | Xidmət sahibi bərbər       |
 | `serviceType`     | `ServiceType` *(enum)* | Xidmət növü                |
 | `description`     | `String`               | Təsviri                    |
 | `durationMinutes` | `Integer`              | Davametmə müddəti (dəqiqə) |
@@ -106,7 +106,7 @@ Barber-lər isə özləri haqqında və təqdim etdikləri xidmətlər haqqında
 | ----------- | --------------- | -------------------- |
 | `id`        | `Long`          | Unikal identifikator |
 | `customer`  | `User`          | Rəyi yazan müştəri   |
-| `barber`    | `Barber`        | Rəy yazılan bərbər   |
+| `master`    | `Barber`        | Rəy yazılan bərbər   |
 | `rating`    | `Integer`       | Ulduz sayı           |
 | `comment`   | `String`        | Rəy mətni            |
 | `createdAt` | `LocalDateTime` | Tarix                |
@@ -120,7 +120,7 @@ Barber-lər isə özləri haqqında və təqdim etdikləri xidmətlər haqqında
 | Sahə        | Tip             | İzah                 |
 | ----------- | --------------- | -------------------- |
 | `id`        | `Long`          | Unikal identifikator |
-| `barber`    | `Barber`        | Əlaqəli bərbər       |
+| `master`    | `Barber`        | Əlaqəli bərbər       |
 | `dayOfWeek` | `DayOfWeek`     | Həftənin günü        |
 | `startTime` | `LocalTime`     | İşin başlama vaxtı   |
 | `endTime`   | `LocalTime`     | İşin bitmə vaxtı     |
@@ -207,7 +207,7 @@ Bunun məqsədi təhlükəsizliyi artırmaqdır — **CUSTOMER** kimi daxil olmu
 3 növ URL var (security əsaslı):
 
 * `/public/**` — authentication tələb etmir (misal: `/public/login`, `/public/register`)
-* `/barber/**` — yalnız **BARBER** roluna icazə verilir
+* `/master/**` — yalnız **BARBER** roluna icazə verilir
 * `/customer/**` — yalnız **CUSTOMER** roluna icazə verilir
 
 Public URL-lərə aşağıdakılar daxildir:
@@ -245,7 +245,7 @@ POST {base_url}/public/register
 ```
 
 > Frontend-də register zamanı ilk öncə istifadəçi `role` seçsin, sonra digər sahələri doldursun.
-> `gender` seçiminin məqsədi istifadəçiyə uyğun (gender-based) barber-ləri göstərməkdir.
+> `gender` seçiminin məqsədi istifadəçiyə uyğun (gender-based) master-ləri göstərməkdir.
 
 ---
 
@@ -345,7 +345,7 @@ Aşağıda verdiyin məlumatları nəzərə alaraq **Appointment API** üçün s
 Hər iki rol üçün mövcuddur:
 
 * **Customer:** `{base_url}/customer/create-appointment`
-* **Barber:** `{base_url}/barber/create-appointment`
+* **Barber:** `{base_url}/master/create-appointment`
 
 **Method:** `POST`
 
@@ -547,11 +547,11 @@ Axtarış ekranında bütün barberləri göstərmək üçün istifadə olunur.
 **Endpoint:**
 
 ```
-GET {base_url}/public/get-barber/{id}
+GET {base_url}/public/get-master/{id}
 ```
 
 **Açıqlama:**
-Seçilmiş barber haqqında tam məlumat qaytarır.
+Seçilmiş master haqqında tam məlumat qaytarır.
 
 **Response nümunəsi:**
 
@@ -598,7 +598,7 @@ Seçilmiş barber haqqında tam məlumat qaytarır.
 **Endpoint:**
 
 ```
-GET {base_url}/barber/profile
+GET {base_url}/master/profile
 ```
 
 **Açıqlama:**
@@ -611,7 +611,7 @@ Giriş etmiş barberin profil məlumatlarını qaytarır.
 **Endpoint:**
 
 ```
-PATCH {base_url}/barber/update-barberProfile/
+PATCH {base_url}/master/update-barberProfile/
 ```
 
 **Açıqlama:**
@@ -637,7 +637,7 @@ Barber rolunda giriş edən istifadəçi:
 Müştəri tərəfdə isə:
 
 * **Axtarış ekranında** `get-barbers` endpoint-dən gələn siyahı göstərilir.
-* Seçilmiş barberin detalları `get-barber/{id}` endpoint-i ilə gətirilir.
+* Seçilmiş barberin detalları `get-master/{id}` endpoint-i ilə gətirilir.
 
 ---
 Aşağıdakı kimi sadə və aydın şəkildə **Review** API üçün README hissəsi hazırladım:
@@ -674,7 +674,7 @@ POST {base_url}/customer/give-review/{id}
 
 ### 2. **Review-ların göstərilməsi**
 
-Barberin bütün review-ları `GET {base_url}/public/get-barber/{id}` endpointindən alınır və frontenddə barberin profili və ya detalları göstərilərkən görünür.
+Barberin bütün review-ları `GET {base_url}/public/get-master/{id}` endpointindən alınır və frontenddə barberin profili və ya detalları göstərilərkən görünür.
 
 ---
 
@@ -701,7 +701,7 @@ Barberlər öz iş saatlarını idarə etmək üçün bu endpointlərdən istifa
 **Endpoint:**
 
 ```
-POST {base_url}/barber/create-schedule
+POST {base_url}/master/create-schedule
 ```
 
 **Request Body:**
@@ -731,7 +731,7 @@ POST {base_url}/barber/create-schedule
 **Endpoint:**
 
 ```
-PATCH {base_url}/barber/update-schedule/{id}
+PATCH {base_url}/master/update-schedule/{id}
 ```
 
 * `{id}` — Yenilənəcək iş qrafikinin ID-si
@@ -757,7 +757,7 @@ PATCH {base_url}/barber/update-schedule/{id}
 **Endpoint:**
 
 ```
-DELETE {base_url}/barber/delete-schedule/{id}
+DELETE {base_url}/master/delete-schedule/{id}
 ```
 
 * `{id}` — Silinəcək iş qrafikinin ID-si
@@ -785,7 +785,7 @@ Aşağıda **Service API** üçün README.md hissəsini hazırladım:
 **Endpoint:**
 
 ```
-POST {base_url}/barber/create-service
+POST {base_url}/master/create-service
 ```
 
 **Request Body:**
@@ -818,7 +818,7 @@ POST {base_url}/barber/create-service
 **Endpoint:**
 
 ```
-PATCH {base_url}/barber/update-service/{id}
+PATCH {base_url}/master/update-service/{id}
 ```
 
 * `{id}` — Yenilənəcək xidmətin ID-si
@@ -846,7 +846,7 @@ PATCH {base_url}/barber/update-service/{id}
 **Endpoint:**
 
 ```
-DELETE {base_url}/barber/delete-service/{id}
+DELETE {base_url}/master/delete-service/{id}
 ```
 
 * `{id}` — Silinəcək xidmətin ID-si
@@ -862,7 +862,7 @@ DELETE {base_url}/barber/delete-service/{id}
 **Endpoint:**
 
 ```
-GET {base_url}/barber/read-service/{id}
+GET {base_url}/master/read-service/{id}
 ```
 
 * `{id}` — Xidmətin ID-si
@@ -870,7 +870,7 @@ GET {base_url}/barber/read-service/{id}
 **Qeyd:**
 
 * Bu endpoint frontend-də xidmətin detallarını göstərmək üçün istifadə olunur.
-* Gələcəkdə silinə bilər, çünki məntiq olaraq barber profilində göstərilən xidmətlərlə birlikdə gəlməsi daha faydalıdır.
+* Gələcəkdə silinə bilər, çünki məntiq olaraq master profilində göstərilən xidmətlərlə birlikdə gəlməsi daha faydalıdır.
 
 ---
 
@@ -879,7 +879,7 @@ GET {base_url}/barber/read-service/{id}
 **Endpoint:**
 
 ```
-GET {base_url}/barber/read-services/
+GET {base_url}/master/read-services/
 ```
 
 * Bu endpoint barberin bütün xidmətlərini oxumaq üçün nəzərdə tutulub, amma məntiqi səbəbdən frontend-də istifadə etmək tövsiyə edilmir.

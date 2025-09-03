@@ -1,7 +1,7 @@
 package com.project.barberreservation.controller;
 
 import com.project.barberreservation.dto.response.MasterDetailedResponse;
-import com.project.barberreservation.dto.response.BarberResponse;
+import com.project.barberreservation.dto.response.MasterResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -10,13 +10,13 @@ import java.util.Map;
 
 public interface IMasterController {
 
-    public List<BarberResponse> getAllBarbers();
+    public List<MasterResponse> getAllMasters();
 
-    public MasterDetailedResponse getBarberById(Long id);
+    public MasterDetailedResponse getMasterById(Long id);
 
-    public MasterDetailedResponse readBarberProfileForOwnProfile();
+    public MasterDetailedResponse readMasterProfileForOwnProfile();
 
-    public MasterDetailedResponse updateBarberProfile(Map<String, Object> updates,
+    public MasterDetailedResponse updateMasterProfile(Map<String, Object> updates,
                                                       MultipartFile profilePhoto,
                                                       MultipartFile[] galleryPhotos) throws IOException;
 

@@ -22,8 +22,8 @@ public class Schedule {
     private Long Id;
 
     @ManyToOne
-    @JoinColumn(name = "barber_id")
-    private Barber barber;
+    @JoinColumn(name = "master_id")
+    private Master master;
 
     private DayOfWeek dayOfWeek;
 

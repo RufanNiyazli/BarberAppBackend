@@ -43,7 +43,7 @@ public class SecurityConfig {
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
-                        .requestMatchers("/barber/**").hasRole("BARBER")
+                        .requestMatchers("/master/**").hasRole("MASTER")
 
 
                         .requestMatchers("/customer/**").hasRole("CUSTOMER")

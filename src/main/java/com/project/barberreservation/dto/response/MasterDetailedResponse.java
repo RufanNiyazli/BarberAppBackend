@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BarberDetailedResponse {
+public class MasterDetailedResponse {
     private Long id;
     private String name;
     private String profilePhotoUrl;

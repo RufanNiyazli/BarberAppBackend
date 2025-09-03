@@ -2,10 +2,10 @@ package com.project.barberreservation.service.impl;
 
 import com.project.barberreservation.dto.request.ReviewRequest;
 import com.project.barberreservation.dto.response.ReviewResponse;
-import com.project.barberreservation.entity.Barber;
+import com.project.barberreservation.entity.Master;
 import com.project.barberreservation.entity.Review;
 import com.project.barberreservation.entity.User;
-import com.project.barberreservation.repository.BarberRepository;
+import com.project.barberreservation.repository.MasterRepository;
 import com.project.barberreservation.repository.ReviewRepository;
 import com.project.barberreservation.repository.UserRepository;
 import com.project.barberreservation.service.IReviewService;
@@ -20,16 +20,16 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements IReviewService {
     private final ReviewRepository reviewRepository;
-    private final BarberRepository barberRepository;
+    private final MasterRepository masterRepository;
     private final UserRepository userRepository;
 
     @Override
-    public ReviewResponse giveReview(ReviewRequest reviewRequest, Long toBarberId) {
-        Optional<Barber> optionalBarber = barberRepository.findById(toBarberId);
-        if (optionalBarber.isEmpty()) {
-            throw new RuntimeException("Barber not Found!");
+    public ReviewResponse giveReview(ReviewRequest reviewRequest, Long toMasterId) {
+        Optional<Master> optionalMaster = masterRepository.findById(toMasterId);
+        if (optionalMaster.isEmpty()) {
+            throw new RuntimeException("Master not Found!");
         }
-        Barber barber = optionalBarber.get();
+        Master master = optionalMaster.get();
 
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -38,13 +38,13 @@ public class ReviewServiceImpl implements IReviewService {
 
         Optional<User> optionalCustomer = userRepository.findById(user.getId());
         if (optionalCustomer.isEmpty()) {
-            throw new RuntimeException("Barber not found!");
+            throw new RuntimeException("Master not found!");
         }
         User customer = optionalCustomer.get();
         validateReviewInput(reviewRequest);
 
         Review review = Review.builder()
-                .barber(barber)
+                .master(master)
                 .comment(reviewRequest.getComment())
                 .createdAt(LocalDateTime.now())
                 .customer(customer)
@@ -53,13 +53,13 @@ public class ReviewServiceImpl implements IReviewService {
 
         Review savedReview = reviewRepository.save(review);
 
-        Double averageRating = reviewRepository.findAverageRatingByBarberId(barber.getId());
-        barber.setRating(averageRating);
-        barberRepository.save(barber);
+        Double averageRating = reviewRepository.findAverageRatingByMasterId(master.getId());
+        master.setRating(averageRating);
+        masterRepository.save(master);
 
         return ReviewResponse.builder()
                 .id(savedReview.getId())
-                .barberName(savedReview.getBarber().getName())
+                .masterName(savedReview.getMaster().getName())
                 .comment(savedReview.getComment())
                 .customerName(savedReview.getCustomer().getUsername())
                 .rating(savedReview.getRating())

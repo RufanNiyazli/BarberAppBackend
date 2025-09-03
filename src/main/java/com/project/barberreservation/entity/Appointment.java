@@ -27,8 +27,8 @@ public class Appointment {
     private User customer;
 
     @ManyToOne
-    @JoinColumn(name = "barber_id")
-    private Barber barber;
+    @JoinColumn(name = "master_id")
+    private Master master;
 
     @ManyToMany
     @JoinTable(

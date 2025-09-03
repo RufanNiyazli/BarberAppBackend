@@ -22,8 +22,8 @@ public class Service {
     Long id;
 
     @ManyToOne
-    @JoinColumn(name = "barber_id")
-    private Barber barber;
+    @JoinColumn(name = "master_id")
+    private Master master;
 
     @Enumerated(EnumType.STRING)
     private ServiceType serviceType;

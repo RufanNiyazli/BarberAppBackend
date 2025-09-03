@@ -31,20 +31,20 @@ public class MasterServiceImpl implements IMasterService {
 
 
     @Override
-    public List<MasterDetailedResponse> readAllBarbers() {
+    public List<MasterResponse> readAllMasters() {
         List<Master> optionals = masterRepository.findAll();
 
 
         return optionals.stream()
-                .map(this::convertToBarberResponse)
+                .map(this::convertToMasterResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public MasterDetailedResponse readBarberById(Long id) {
+    public MasterDetailedResponse readMasterById(Long id) {
         Optional<Master> optional = masterRepository.findById(id);
         if (optional.isEmpty()) {
-            throw new RuntimeException("This barber notFound!");
+            throw new RuntimeException("This master notFound!");
         }
         Master master = optional.get();
         List<ServiceResponse> serviceResponses = master.getServices().stream()
@@ -59,7 +59,7 @@ public class MasterServiceImpl implements IMasterService {
         List<ReviewResponse> reviewResponses = master.getReviews().stream()
                 .map(review -> ReviewResponse.builder()
                         .id(review.getId())
-                        .barberName(master.getName())
+                        .masterName(master.getName())
                         .createdAt(review.getCreatedAt())
                         .comment(review.getComment())
                         .customerName(review.getCustomer().getUsername())
@@ -91,14 +91,14 @@ public class MasterServiceImpl implements IMasterService {
     }
 
     @Override
-    public MasterDetailedResponse readBarberProfileForOwnProfile() {
+    public MasterDetailedResponse readMasterProfileForOwnProfile() {
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Optional<Master> optional = masterRepository.findByUserId(user.getId());
         if (optional.isEmpty()) {
-            throw new RuntimeException("Barber not found!");
+            throw new RuntimeException("Master not found!");
         }
         Master master = optional.get();
 
@@ -114,7 +114,7 @@ public class MasterServiceImpl implements IMasterService {
         List<ReviewResponse> reviewResponses = master.getReviews().stream()
                 .map(review -> ReviewResponse.builder()
                         .id(review.getId())
-                        .barberName(master.getName())
+                        .masterName(master.getName())
                         .createdAt(review.getCreatedAt())
                         .comment(review.getComment())
                         .customerName(review.getCustomer().getUsername())
@@ -146,7 +146,7 @@ public class MasterServiceImpl implements IMasterService {
     }
 
     @Override
-    public MasterDetailedResponse updateBarberProfile(Map<String, Object> updates,
+    public MasterDetailedResponse updateMasterProfile(Map<String, Object> updates,
                                                       MultipartFile profilePhoto,
                                                       MultipartFile[] galleryPhotos) throws IOException {
 
@@ -155,7 +155,7 @@ public class MasterServiceImpl implements IMasterService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Master master = masterRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new RuntimeException("Barber not found!"));
+                .orElseThrow(() -> new RuntimeException("Master not found!"));
 
 
         if (updates != null) {
@@ -192,7 +192,7 @@ public class MasterServiceImpl implements IMasterService {
         List<ReviewResponse> reviewResponses = dbMaster.getReviews().stream()
                 .map(review -> ReviewResponse.builder()
                         .id(review.getId())
-                        .barberName(master.getName())
+                        .masterName(master.getName())
                         .createdAt(review.getCreatedAt())
                         .comment(review.getComment())
                         .customerName(review.getCustomer().getUsername())
@@ -226,12 +226,12 @@ public class MasterServiceImpl implements IMasterService {
     }
 
 
-    private MasterDetailedResponse convertToBarberResponse(Master master) {
+    private MasterResponse convertToMasterResponse(Master master) {
 
         List<ServiceType> serviceTypes = master.getServices()
                 .stream().map(com.project.barberreservation.entity.Service::getServiceType)
                 .distinct().toList();
-        return MasterDetailedResponse.builder()
+        return MasterResponse.builder()
                 .id(master.getId())
                 .name(master.getName())
                 .profilePhotoUrl(master.getProfilePhotoUrl())

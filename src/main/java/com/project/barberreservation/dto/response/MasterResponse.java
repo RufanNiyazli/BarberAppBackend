@@ -1,7 +1,6 @@
 package com.project.barberreservation.dto.response;
 
 import com.project.barberreservation.enumtype.GenderType;
-import com.project.barberreservation.enumtype.ServiceType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BarberResponse {
+public class MasterResponse {
     private Long id;
     private String name;
     private String profilePhotoUrl;

@@ -18,7 +18,7 @@ public class ReviewControllerImpl implements IReviewController {
 
     @PostMapping("/customer/give-review/{id}")
     @Override
-    public ReviewResponse giveReview(@RequestBody ReviewRequest reviewRequest, @PathVariable(name = "id") Long toBarberId) {
-        return reviewService.giveReview(reviewRequest, toBarberId);
+    public ReviewResponse giveReview(@RequestBody ReviewRequest reviewRequest, @PathVariable(name = "id") Long toMasterId) {
+        return reviewService.giveReview(reviewRequest, toMasterId);
     }
 }

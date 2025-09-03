@@ -16,7 +16,7 @@ import java.util.List;
 @Builder
 public class AppointmentResponse {
     private Long id;
-    private String barberName;
+    private String masterName;
     private String customerName;
     private List<ServiceResponse> services;
     private LocalDate appointmentDate;

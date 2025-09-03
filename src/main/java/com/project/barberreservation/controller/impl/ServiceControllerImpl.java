@@ -17,20 +17,20 @@ public class ServiceControllerImpl implements IServiceController {
     private final IServiceS serviceS;
 
 
-    @PostMapping("/barber/create-service")
+    @PostMapping("/master/create-service")
     @Override
     public ServiceResponse createService(@RequestBody ServiceRequest serviceRequest) {
         return serviceS.createService(serviceRequest);
     }
 
     @Override
-    @PatchMapping("/barber/update-service/{id}")
+    @PatchMapping("/master/update-service/{id}")
     public ServiceResponse updateService(@RequestBody Map<String, Object> updates, @PathVariable(name = "id") Long id) throws JsonMappingException {
         return serviceS.updateService(updates, id);
     }
 
     @Override
-    @DeleteMapping("/barber/delete-service/{id}")
+    @DeleteMapping("/master/delete-service/{id}")
     public void deleteService(@PathVariable(name = "id") Long serviceId) {
         serviceS.deleteService(serviceId);
 
@@ -43,7 +43,7 @@ public class ServiceControllerImpl implements IServiceController {
     }
 
     @Override
-    @GetMapping("/barber/read-services")
+    @GetMapping("/master/read-services")
     public List<ServiceResponse> readServices() {
         return serviceS.readServices();
     }

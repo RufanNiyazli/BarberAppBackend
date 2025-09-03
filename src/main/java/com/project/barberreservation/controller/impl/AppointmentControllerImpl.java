@@ -15,7 +15,7 @@ import java.util.List;
 public class AppointmentControllerImpl implements IAppointmentController {
     private final IAppointmentService appointmentService;
 
-    @PostMapping({"/customer/create-appointment", "/barber/create-appointment"})
+    @PostMapping({"/customer/create-appointment", "/master/create-appointment"})
     @Override
     public AppointmentResponse createAppointment(@RequestBody AppointmentRequest appointmentRequest) {
         return appointmentService.createAppointment(appointmentRequest);

@@ -5,11 +5,11 @@ import com.project.barberreservation.dto.request.RefreshTokenRequest;
 import com.project.barberreservation.dto.request.RegisterRequest;
 import com.project.barberreservation.dto.request.VerifyUserRequest;
 import com.project.barberreservation.dto.response.AuthResponse;
-import com.project.barberreservation.entity.Barber;
+import com.project.barberreservation.entity.Master;
 import com.project.barberreservation.entity.RefreshToken;
 import com.project.barberreservation.entity.User;
 import com.project.barberreservation.enumtype.RoleType;
-import com.project.barberreservation.repository.BarberRepository;
+import com.project.barberreservation.repository.MasterRepository;
 import com.project.barberreservation.repository.RefreshTokenRepository;
 import com.project.barberreservation.repository.UserRepository;
 import com.project.barberreservation.security.JwtService;
@@ -36,7 +36,7 @@ public class AuthServiceImpl implements IAuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final AuthenticationManager authenticationManager;
     private final IEmailService emailService;
-    private final BarberRepository barberRepository;
+    private final MasterRepository masterRepository;
 
     @Override
     public AuthResponse register(RegisterRequest registerRequest) throws MessagingException {
@@ -56,15 +56,15 @@ public class AuthServiceImpl implements IAuthService {
                 .build();
         User dbUser = userRepository.save(user);
 
-        if (dbUser.getRole().equals(RoleType.BARBER)) {
-            Barber barber = Barber.builder()
+        if (dbUser.getRole().equals(RoleType.MASTER)) {
+            Master master = Master.builder()
                     .user(dbUser)
                     .name(dbUser.getUsername())
                     .rating(0.0)
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build();
-            barberRepository.save(barber);
+            masterRepository.save(master);
         }
 
         user.setVerificationCode(generateVerificationCode());

@@ -5,11 +5,11 @@ import com.project.barberreservation.dto.request.AppointmentUpdateRequest;
 import com.project.barberreservation.dto.response.AppointmentResponse;
 import com.project.barberreservation.dto.response.ServiceResponse;
 import com.project.barberreservation.entity.Appointment;
-import com.project.barberreservation.entity.Barber;
+import com.project.barberreservation.entity.Master;
 import com.project.barberreservation.entity.User;
 import com.project.barberreservation.enumtype.ReservationStatus;
 import com.project.barberreservation.repository.AppointmentRepository;
-import com.project.barberreservation.repository.BarberRepository;
+import com.project.barberreservation.repository.MasterRepository;
 import com.project.barberreservation.repository.ServiceRepository;
 import com.project.barberreservation.repository.UserRepository;
 import com.project.barberreservation.service.IAppointmentService;
@@ -28,7 +28,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
 
     private final UserRepository userRepository;
     private final ServiceRepository serviceRepository;
-    private final BarberRepository barberRepository;
+    private final MasterRepository masterRepository;
 
     @Override
     public AppointmentResponse createAppointment(AppointmentRequest appointmentRequest) {
@@ -50,7 +50,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
         LocalTime endTime = appointmentRequest.getAppointmentTime().plusMinutes(totalDuration);
 
 
-        Barber barber = barberRepository.findById(appointmentRequest.getBarberId()).orElseThrow(() -> new RuntimeException("Barber not found!"));
+        Master master = masterRepository.findById(appointmentRequest.getMasterId()).orElseThrow(() -> new RuntimeException("Master not found!"));
 
 
         Appointment appointment = Appointment.builder()
@@ -60,7 +60,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
                 .services(services)
                 .updatedAt(LocalDateTime.now())
                 .createdAt(LocalDateTime.now())
-                .barber(barber)
+                .master(master)
                 .customer(user)
                 .status(ReservationStatus.CONFIRMED)
 
@@ -138,7 +138,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
                 .appointmentDate(appointment.getAppointmentDate())
                 .appointmentTime(appointment.getAppointmentTime())
                 .appointmentEndTime(appointment.getAppointmentEndTime())
-                .barberName(appointment.getBarber().getName())
+                .masterName(appointment.getMaster().getName())
                 .customerName(appointment.getCustomer().getUsername())
                 .status(appointment.getStatus())
                 .services(services)
