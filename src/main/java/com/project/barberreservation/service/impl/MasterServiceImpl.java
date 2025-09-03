@@ -1,18 +1,16 @@
 package com.project.barberreservation.service.impl;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.barberreservation.dto.response.*;
-import com.project.barberreservation.entity.Barber;
+import com.project.barberreservation.entity.Master;
 import com.project.barberreservation.entity.User;
 import com.project.barberreservation.enumtype.ServiceType;
-import com.project.barberreservation.repository.BarberRepository;
+import com.project.barberreservation.repository.MasterRepository;
 import com.project.barberreservation.repository.UserRepository;
-import com.project.barberreservation.service.IBarberService;
+import com.project.barberreservation.service.IMasterService;
 import com.project.barberreservation.util.FileStorageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,16 +23,16 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class BarberServiceImpl implements IBarberService {
-    private final BarberRepository barberRepository;
+public class MasterServiceImpl implements IMasterService {
+    private final MasterRepository masterRepository;
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
     private final FileStorageUtil fileStorageUtil;
 
 
     @Override
-    public List<BarberResponse> readAllBarbers() {
-        List<Barber> optionals = barberRepository.findAll();
+    public List<MasterDetailedResponse> readAllBarbers() {
+        List<Master> optionals = masterRepository.findAll();
 
 
         return optionals.stream()
@@ -43,13 +41,13 @@ public class BarberServiceImpl implements IBarberService {
     }
 
     @Override
-    public BarberDetailedResponse readBarberById(Long id) {
-        Optional<Barber> optional = barberRepository.findById(id);
+    public MasterDetailedResponse readBarberById(Long id) {
+        Optional<Master> optional = masterRepository.findById(id);
         if (optional.isEmpty()) {
             throw new RuntimeException("This barber notFound!");
         }
-        Barber barber = optional.get();
-        List<ServiceResponse> serviceResponses = barber.getServices().stream()
+        Master master = optional.get();
+        List<ServiceResponse> serviceResponses = master.getServices().stream()
                 .map(service -> ServiceResponse.builder()
                         .id(service.getId())
                         .serviceType(service.getServiceType())
@@ -58,10 +56,10 @@ public class BarberServiceImpl implements IBarberService {
                         .build())
                 .toList();
 
-        List<ReviewResponse> reviewResponses = barber.getReviews().stream()
+        List<ReviewResponse> reviewResponses = master.getReviews().stream()
                 .map(review -> ReviewResponse.builder()
                         .id(review.getId())
-                        .barberName(barber.getName())
+                        .barberName(master.getName())
                         .createdAt(review.getCreatedAt())
                         .comment(review.getComment())
                         .customerName(review.getCustomer().getUsername())
@@ -69,7 +67,7 @@ public class BarberServiceImpl implements IBarberService {
 
                         .build()
                 ).toList();
-        List<ScheduleResponse> scheduleResponses = barber.getSchedules().stream()
+        List<ScheduleResponse> scheduleResponses = master.getSchedules().stream()
                 .map(
                         schedule -> ScheduleResponse.builder()
                                 .endTime(schedule.getEndTime())
@@ -79,32 +77,32 @@ public class BarberServiceImpl implements IBarberService {
                 ).toList();
 
 
-        return BarberDetailedResponse.builder()
-                .id(barber.getId())
+        return MasterDetailedResponse.builder()
+                .id(master.getId())
                 .services(serviceResponses)
-                .rating(barber.getRating())
-                .name(barber.getName())
+                .rating(master.getRating())
+                .name(master.getName())
                 .reviews(reviewResponses)
                 .schedules(scheduleResponses)
                 .services(serviceResponses)
-                .targetGender(barber.getTargetGender())
-                .location(barber.getLocation())
+                .targetGender(master.getTargetGender())
+                .location(master.getLocation())
                 .build();
     }
 
     @Override
-    public BarberDetailedResponse readBarberProfileForOwnProfile() {
+    public MasterDetailedResponse readBarberProfileForOwnProfile() {
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        Optional<Barber> optional = barberRepository.findByUserId(user.getId());
+        Optional<Master> optional = masterRepository.findByUserId(user.getId());
         if (optional.isEmpty()) {
             throw new RuntimeException("Barber not found!");
         }
-        Barber barber = optional.get();
+        Master master = optional.get();
 
-        List<ServiceResponse> serviceResponses = barber.getServices().stream()
+        List<ServiceResponse> serviceResponses = master.getServices().stream()
                 .map(service -> ServiceResponse.builder()
                         .id(service.getId())
                         .serviceType(service.getServiceType())
@@ -113,10 +111,10 @@ public class BarberServiceImpl implements IBarberService {
                         .build())
                 .toList();
 
-        List<ReviewResponse> reviewResponses = barber.getReviews().stream()
+        List<ReviewResponse> reviewResponses = master.getReviews().stream()
                 .map(review -> ReviewResponse.builder()
                         .id(review.getId())
-                        .barberName(barber.getName())
+                        .barberName(master.getName())
                         .createdAt(review.getCreatedAt())
                         .comment(review.getComment())
                         .customerName(review.getCustomer().getUsername())
@@ -124,7 +122,7 @@ public class BarberServiceImpl implements IBarberService {
 
                         .build()
                 ).toList();
-        List<ScheduleResponse> scheduleResponses = barber.getSchedules().stream()
+        List<ScheduleResponse> scheduleResponses = master.getSchedules().stream()
                 .map(
                         schedule -> ScheduleResponse.builder()
                                 .endTime(schedule.getEndTime())
@@ -133,14 +131,14 @@ public class BarberServiceImpl implements IBarberService {
                                 .build()
                 ).toList();
 
-        return BarberDetailedResponse.builder()
-                .id(barber.getId())
+        return MasterDetailedResponse.builder()
+                .id(master.getId())
                 .services(serviceResponses)
-                .rating(barber.getRating())
-                .targetGender(barber.getTargetGender())
+                .rating(master.getRating())
+                .targetGender(master.getTargetGender())
                 .schedules(scheduleResponses)
-                .location(barber.getLocation())
-                .name(barber.getName())
+                .location(master.getLocation())
+                .name(master.getName())
                 .reviews(reviewResponses)
 
 
@@ -148,7 +146,7 @@ public class BarberServiceImpl implements IBarberService {
     }
 
     @Override
-    public BarberDetailedResponse updateBarberProfile(Map<String, Object> updates,
+    public MasterDetailedResponse updateBarberProfile(Map<String, Object> updates,
                                                       MultipartFile profilePhoto,
                                                       MultipartFile[] galleryPhotos) throws IOException {
 
@@ -156,33 +154,33 @@ public class BarberServiceImpl implements IBarberService {
         User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Barber barber = barberRepository.findByUserId(user.getId())
+        Master master = masterRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new RuntimeException("Barber not found!"));
 
 
         if (updates != null) {
-            objectMapper.updateValue(barber, updates);
+            objectMapper.updateValue(master, updates);
         }
         if (!profilePhoto.isEmpty()) {
             String profilePhotoUrl = fileStorageUtil.saveProfilePhoto(profilePhoto);
-            barber.setProfilePhotoUrl(profilePhotoUrl);
+            master.setProfilePhotoUrl(profilePhotoUrl);
 
         }
         if (galleryPhotos != null) {
             for (MultipartFile file : galleryPhotos) {
                 if (!file.isEmpty()) {
                     String url = fileStorageUtil.saveGalleryPhotos(file);
-                    barber.getGalleryPhotos().add(url);
+                    master.getGalleryPhotos().add(url);
                 }
             }
 
         }
 
-        barber.setUpdatedAt(LocalDateTime.now());
-        Barber dbBarber = barberRepository.save(barber);
+        master.setUpdatedAt(LocalDateTime.now());
+        Master dbMaster = masterRepository.save(master);
 
         //
-        List<ServiceResponse> serviceResponses = dbBarber.getServices().stream()
+        List<ServiceResponse> serviceResponses = dbMaster.getServices().stream()
                 .map(service -> ServiceResponse.builder()
                         .id(service.getId())
                         .serviceType(service.getServiceType())
@@ -191,10 +189,10 @@ public class BarberServiceImpl implements IBarberService {
                         .build())
                 .toList();
 
-        List<ReviewResponse> reviewResponses = dbBarber.getReviews().stream()
+        List<ReviewResponse> reviewResponses = dbMaster.getReviews().stream()
                 .map(review -> ReviewResponse.builder()
                         .id(review.getId())
-                        .barberName(barber.getName())
+                        .barberName(master.getName())
                         .createdAt(review.getCreatedAt())
                         .comment(review.getComment())
                         .customerName(review.getCustomer().getUsername())
@@ -202,7 +200,7 @@ public class BarberServiceImpl implements IBarberService {
 
                         .build()
                 ).toList();
-        List<ScheduleResponse> scheduleResponses = dbBarber.getSchedules().stream()
+        List<ScheduleResponse> scheduleResponses = dbMaster.getSchedules().stream()
                 .map(
                         schedule -> ScheduleResponse.builder()
                                 .endTime(schedule.getEndTime())
@@ -211,36 +209,36 @@ public class BarberServiceImpl implements IBarberService {
                                 .build()
                 ).toList();
 
-        return BarberDetailedResponse.builder()
-                .id(dbBarber.getId())
+        return MasterDetailedResponse.builder()
+                .id(dbMaster.getId())
                 .services(serviceResponses)
-                .rating(dbBarber.getRating())
-                .name(dbBarber.getName())
-                .profilePhotoUrl(dbBarber.getProfilePhotoUrl())
-                .galleryPhotos(dbBarber.getGalleryPhotos())
-                .targetGender(dbBarber.getTargetGender())
+                .rating(dbMaster.getRating())
+                .name(dbMaster.getName())
+                .profilePhotoUrl(dbMaster.getProfilePhotoUrl())
+                .galleryPhotos(dbMaster.getGalleryPhotos())
+                .targetGender(dbMaster.getTargetGender())
                 .schedules(scheduleResponses)
                 .reviews(reviewResponses)
-                .location(dbBarber.getLocation())
-                .is_available(dbBarber.getIs_available())
+                .location(dbMaster.getLocation())
+                .is_available(dbMaster.getIs_available())
 
                 .build();
     }
 
 
-    private BarberResponse convertToBarberResponse(Barber barber) {
+    private MasterDetailedResponse convertToBarberResponse(Master master) {
 
-        List<ServiceType> serviceTypes = barber.getServices()
+        List<ServiceType> serviceTypes = master.getServices()
                 .stream().map(com.project.barberreservation.entity.Service::getServiceType)
                 .distinct().toList();
-        return BarberResponse.builder()
-                .id(barber.getId())
-                .name(barber.getName())
-                .profilePhotoUrl(barber.getProfilePhotoUrl())
+        return MasterDetailedResponse.builder()
+                .id(master.getId())
+                .name(master.getName())
+                .profilePhotoUrl(master.getProfilePhotoUrl())
                 .serviceTypes(serviceTypes)
-                .rating(barber.getRating())
-                .targetGender(barber.getTargetGender())
-                .location(barber.getLocation())
+                .rating(master.getRating())
+                .targetGender(master.getTargetGender())
+                .location(master.getLocation())
                 .build();
     }
 }
