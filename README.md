@@ -38,28 +38,48 @@ Barber-lər isə özləri haqqında və təqdim etdikləri xidmətlər haqqında
 
 ---
 
-### 2. **Barber**
+# Barber Entity
 
 **Cədvəl:** `master`
 
-| Sahə           | Tip                   | İzah                          |
-| -------------- | --------------------- | ----------------------------- |
-| `id`           | `Long`                | Unikal identifikator          |
-| `user`         | `User`                | Əlaqəli istifadəçi (OneToOne) |
-| `name`         | `String`              | Bərbərin adı                  |
-| `photoUrl`     | `String`              | Şəkil URL-i                   |
-| `location`     | `String`              | Ünvan                         |
-| `rating`       | `Double`              | Ümumi reytinq                 |
-| `targetGender` | `GenderType` *(enum)* | Xidmət etdiyi cins            |
-| `createdAt`    | `LocalDateTime`       | Yaradılma tarixi              |
-| `updatedAt`    | `LocalDateTime`       | Yenilənmə tarixi              |
+Bu entity bərbərləri və onların məlumatlarını təmsil edir.
 
-Əlaqələr:
+## Sahələr
+
+| Sahə            | Tip                   | İzah                          |
+|-----------------|---------------------|-------------------------------|
+| `id`            | `Long`               | Unikal identifikator          |
+| `user`          | `User`               | Əlaqəli istifadəçi (OneToOne) |
+| `name`          | `String`             | Bərbərin adı                  |
+| `profilePhotoUrl` | `String`           | Profil şəkil URL-i            |
+| `galleryPhotos` | `List<String>`       | Bərbərin əlavə şəkil qalereyası |
+| `location`      | `String`             | Ünvan                         |
+| `rating`        | `Double`             | Ümumi reytinq                 |
+| `targetGender`  | `GenderType` *(enum)*| Xidmət etdiyi cins            |
+| `createdAt`     | `LocalDateTime`      | Yaradılma tarixi              |
+| `updatedAt`     | `LocalDateTime`      | Yenilənmə tarixi              |
+| `is_available`  | `Boolean`            | Mövcud olub-olmaması          |
+
+## Əlaqələr
 
 * `List<Service>` — **OneToMany** (təklif olunan xidmətlər)
 * `List<Appointment>` — **OneToMany** (qəbul edilən rezervasiyalar)
 * `List<Review>` — **OneToMany** (müştəri rəyləri)
 * `List<Schedule>` — **OneToMany** (iş qrafiki)
+
+## Qeyd
+
+- `galleryPhotos` sahəsi `@ElementCollection` vasitəsilə əlavə şəkillərin saxlanması üçün istifadə olunur.
+- `is_available` sahəsi bərbərin hazırda mövcud olub-olmamasını göstərir.
+- OneToMany əlaqələr `mappedBy` atributu ilə `Barber` entity-si ilə əlaqələndirilmişdir.
+- 
+## is_available Sahəsi Haqqında
+
+- `is_available` sahəsi **həmişə default olaraq `false`** olaraq təyin olunub.
+- Bu sahə bərbərin **bugün işləyib-işləmədiyini** göstərmək üçün istifadə olunur.
+- Hər dəfə barber app-ə daxil olduqda, sistem avtomatik olaraq xəbərdarlıq göstərir.
+- Bu yolla, barberin bugünkü iş statusu real vaxtda izlənilə bilir.
+- Məqsəd: bərbər təcili iş üçün mövcud olduqda bunu qeyd edə bilir və müştəri də rahatlıqla görə bilir ki, bərbər hazırda işləyirmi və ya işdə deyil.
 
 ---
 
@@ -240,7 +260,6 @@ POST {base_url}/public/register
   "role": "ADMIN",
   "gender": "MALE",
   "phoneNumber": "+1234567890",
-  "profilePicture": "https://example.com/images/profile.jpg"
 }
 ```
 
@@ -274,7 +293,7 @@ POST {base_url}/public/login
 {
   "accessToken": "string",
   "refreshToken": "string",
-  "roleType": "BARBER","CUSTOMER"
+  "roleType": "BARBER" / veya "CUSTOMER"
 }
 ```
 
@@ -381,9 +400,18 @@ Hər iki rol üçün mövcuddur:
   ],
   "appointmentDate": "2025-08-15",
   "appointmentTime": "10:00:00",
+  "appointmentEndTime": "11:00:00",
   "status": "CONFIRMED"
 }
+
 ```
+## appointmentEndTime Sahəsi Haqqında
+
+- `appointmentEndTime` sahəsi **avtomatik təyin olunur**.
+- Hər bir xidmətin müddəti nəzərə alınaraq hesablanır.  
+  Məsələn, saç kəsimi 30 dəqiqə çəkirsə, bu müddət avtomatik olaraq `appointmentTime`-a əlavə olunur.
+- Əlavə olaraq, sistem 10 dəqiqə **buffer vaxtı** da əlavə edir ki, növbəti rezervasiya üçün vaxt qalır.
+- Bu sahə müştəri və bərbər üçün görüşün real son vaxtını göstərir və düzgün planlaşdırma təmin edir.
 
 ---
 
@@ -517,26 +545,60 @@ Axtarış ekranında bütün barberləri göstərmək üçün istifadə olunur.
 
 ```json
 [
-  {
-    "id": 1,
-    "name": "John Doe",
-    "photoUrl": "https://example.com/photos/johndoe.jpg",
-    "serviceTypes": [
-      {
-        "id": 101,
-        "name": "HAIRCUT",
-        "description": "Classic men's haircut"
-      },
-      {
-        "id": 102,
-        "name": "BEARD_TRIM",
-        "description": "Professional beard trim and shaping"
-      }
-    ],
-    "rating": 4.8,
-    "targetGender": "MALE",
-    "location": "123 Main Street, Anytown"
-  }
+{
+  "id": 12345,
+  "name": "John Smith",
+  "profilePhotoUrl": "https://example.com/profiles/john_smith.jpg",
+  "galleryPhotos": [
+    "https://example.com/gallery/photo1.jpg",
+    "https://example.com/gallery/photo2.jpg"
+  ],
+  "location": "123 Main Street, Baku, Azerbaijan",
+  "rating": 4.8,
+  "targetGender": "MALE",
+  "services": [
+    {
+      "serviceId": 101,
+      "serviceName": "Haircut",
+      "price": 15.0,
+      "durationMinutes": 30
+    },
+    {
+      "serviceId": 102,
+      "serviceName": "Keratin Treatment",
+      "price": 30.0,
+      "durationMinutes": 60
+    }
+  ],
+  "reviews": [
+    {
+      "reviewId": 201,
+      "customerName": "Jane Doe",
+      "rating": 5,
+      "comment": "Great haircut!"
+    },
+    {
+      "reviewId": 202,
+      "customerName": "Alex Brown",
+      "rating": 4,
+      "comment": "Friendly and professional."
+    }
+  ],
+  "schedules": [
+    {
+      "dayOfWeek": "MONDAY",
+      "startTime": "09:00:00",
+      "endTime": "18:00:00"
+    },
+    {
+      "dayOfWeek": "TUESDAY",
+      "startTime": "09:00:00",
+      "endTime": "18:00:00"
+    }
+  ],
+  "is_available": false
+}
+
 ]
 ```
 
@@ -557,36 +619,59 @@ Seçilmiş master haqqında tam məlumat qaytarır.
 
 ```json
 {
-  "id": 123,
-  "name": "Alex Johnson",
-  "photoUrl": "https://example.com/photos/alexjohnson.jpg",
-  "location": "789 Pine Street, Anytown",
-  "rating": 4.7,
+  "id": 12345,
+  "name": "John Smith",
+  "profilePhotoUrl": "https://example.com/profiles/john_smith.jpg",
+  "galleryPhotos": [
+    "https://example.com/gallery/photo1.jpg",
+    "https://example.com/gallery/photo2.jpg"
+  ],
+  "location": "123 Main Street, Baku, Azerbaijan",
+  "rating": 4.8,
   "targetGender": "MALE",
   "services": [
     {
       "serviceId": 101,
       "serviceName": "Haircut",
-      "price": 30.00
+      "price": 15.0,
+      "durationMinutes": 30
+    },
+    {
+      "serviceId": 102,
+      "serviceName": "Keratin Treatment",
+      "price": 30.0,
+      "durationMinutes": 60
     }
   ],
   "reviews": [
     {
-      "reviewId": 501,
-      "reviewerName": "Mark Davis",
+      "reviewId": 201,
+      "customerName": "Jane Doe",
       "rating": 5,
-      "comment": "Great haircut and friendly service!"
+      "comment": "Great haircut!"
+    },
+    {
+      "reviewId": 202,
+      "customerName": "Alex Brown",
+      "rating": 4,
+      "comment": "Friendly and professional."
     }
   ],
   "schedules": [
     {
-      "scheduleId": 801,
       "dayOfWeek": "MONDAY",
       "startTime": "09:00:00",
       "endTime": "18:00:00"
+    },
+    {
+      "dayOfWeek": "TUESDAY",
+      "startTime": "09:00:00",
+      "endTime": "18:00:00"
     }
-  ]
+  ],
+  "is_available": false
 }
+
 ```
 
 ---
@@ -600,6 +685,62 @@ Seçilmiş master haqqında tam məlumat qaytarır.
 ```
 GET {base_url}/master/profile
 ```
+**Response**
+```json
+{
+  "id": 12345,
+  "name": "John Smith",
+  "profilePhotoUrl": "https://example.com/profiles/john_smith.jpg",
+  "galleryPhotos": [
+    "https://example.com/gallery/photo1.jpg",
+    "https://example.com/gallery/photo2.jpg"
+  ],
+  "location": "123 Main Street, Baku, Azerbaijan",
+  "rating": 4.8,
+  "targetGender": "MALE",
+  "services": [
+    {
+      "serviceId": 101,
+      "serviceName": "Haircut",
+      "price": 15.0,
+      "durationMinutes": 30
+    },
+    {
+      "serviceId": 102,
+      "serviceName": "Keratin Treatment",
+      "price": 30.0,
+      "durationMinutes": 60
+    }
+  ],
+  "reviews": [
+    {
+      "reviewId": 201,
+      "customerName": "Jane Doe",
+      "rating": 5,
+      "comment": "Great haircut!"
+    },
+    {
+      "reviewId": 202,
+      "customerName": "Alex Brown",
+      "rating": 4,
+      "comment": "Friendly and professional."
+    }
+  ],
+  "schedules": [
+    {
+      "dayOfWeek": "MONDAY",
+      "startTime": "09:00:00",
+      "endTime": "18:00:00"
+    },
+    {
+      "dayOfWeek": "TUESDAY",
+      "startTime": "09:00:00",
+      "endTime": "18:00:00"
+    }
+  ],
+  "is_available": false
+}
+```
 
 **Açıqlama:**
 Giriş etmiş barberin profil məlumatlarını qaytarır.
@@ -610,12 +751,37 @@ Giriş etmiş barberin profil məlumatlarını qaytarır.
 
 **Endpoint:**
 
+<<<<<<< HEAD
 ```
 PATCH {base_url}/master/update-barberProfile/
 ```
+=======
+## PATCH {base_url}/barber/update-barberProfile/
+
+**Açıqlama:**  
+Bu endpoint **barberin profilini yeniləmək** üçün istifadə olunur.  
+
+- Request body **entity**-yə əsaslanır və dinamikdir.  
+- Əlavə olaraq, istifadəçi profil şəkli və qalereya şəkilləri əlavə edə bilər.  
+
+### Parametrlər
+
+| Parametr        | Tip                       | İzah |
+|-----------------|---------------------------|------|
+| `updates`       | `Map<String, Object>`     | Yenilənəcək sahələr və onların dəyərləri |
+| `profilePhoto`  | `MultipartFile`           | Profil şəkli (yalnız 1 şəkil seçilə bilər) |
+| `galleryPhotos` | `MultipartFile[]`         | Qalereya üçün əlavə şəkillər (maksimum 5 şəkil seçilə bilər) |
+
+### Qeyd
+
+- `profilePhoto` sahəsi yalnız bir şəkil üçün nəzərdə tutulub.  
+- `galleryPhotos` sahəsində maksimum 5 şəkil əlavə edilə bilər.  
+- Əlavə edilmiş şəkillər `galleryPhotos` listinə əlavə olunur və mövcud şəkillər dəyişdirilə bilər.
+
+>>>>>>> 097e39b56b0edd1cb04bcc1af95d12accff93e76
 
 **Açıqlama:**
-Barberin profilini yeniləmək üçün istifadə olunur. Request body **entity**-yə əsaslanır və dinamikdir.
+Barberin profilini yeniləmək üçün istifadə olunur. Request body **entity**-yə əsaslanır və dinamikdir Əlavə olaraq burda şəkil seçiləcək.
 
 **Mümkün dəyişikliklər:**
 
@@ -684,9 +850,6 @@ Barberin bütün review-ları `GET {base_url}/public/get-master/{id}` endpointin
 * Barberlər review verə bilməz.
 
 ---
-
-
-Aşağıdakı kimi **Schedule API** üçün README hissəsini hazırladım:
 
 ---
 
@@ -886,10 +1049,10 @@ GET {base_url}/master/read-services/
 * Xidmətlər, review-lar və cədvəllər (`schedules`) bir yerdə profil ekranına yüklənməsi daha uyğundur.
 
 ---
+```
 
-Bu API-lər barberlərə xidmətlərini idarə etməkdə tam rahatlıq verir.
+```
 
----
 ---
 
 ## ⚠️ Problemlər və Gələcək Təkmilləşdirmələr
@@ -919,6 +1082,7 @@ Bu API-lər barberlərə xidmətlərini idarə etməkdə tam rahatlıq verir.
 
 
 ---
+
 
 
 
