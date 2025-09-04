@@ -87,6 +87,7 @@ public class MasterServiceImpl implements IMasterService {
                 .services(serviceResponses)
                 .targetGender(master.getTargetGender())
                 .location(master.getLocation())
+                .masterType(master.getMasterType())
                 .build();
     }
 
@@ -136,6 +137,7 @@ public class MasterServiceImpl implements IMasterService {
                 .services(serviceResponses)
                 .rating(master.getRating())
                 .targetGender(master.getTargetGender())
+                .masterType(master.getMasterType())
                 .schedules(scheduleResponses)
                 .location(master.getLocation())
                 .name(master.getName())
@@ -217,6 +219,7 @@ public class MasterServiceImpl implements IMasterService {
                 .profilePhotoUrl(dbMaster.getProfilePhotoUrl())
                 .galleryPhotos(dbMaster.getGalleryPhotos())
                 .targetGender(dbMaster.getTargetGender())
+                .masterType(dbMaster.getMasterType())
                 .schedules(scheduleResponses)
                 .reviews(reviewResponses)
                 .location(dbMaster.getLocation())

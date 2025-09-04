@@ -1,6 +1,7 @@
 package com.project.barberreservation.entity;
 
 import com.project.barberreservation.enumtype.GenderType;
+import com.project.barberreservation.enumtype.MasterType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,12 +34,16 @@ public class Master {
     @Builder.Default
     private List<String> galleryPhotos = new ArrayList<>();
 
+    private MasterType masterType;
+
     private String location;
 
     private Double rating;
 
     @Enumerated(EnumType.STRING)
     private GenderType targetGender;
+
+    private Boolean isProfileComplete = false;
 
     private LocalDateTime createdAt;
 

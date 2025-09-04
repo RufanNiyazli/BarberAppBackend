@@ -1,9 +1,9 @@
 
-# Barber App Backend
+# master App Backend
 
 Bu backend həm **customer** (müştəri), həm də **master** (bərbər) istifadəçilər üçün nəzərdə tutulmuşdur.
 Burada customer-lar qeydiyyatdan keçib master-ə rezervasiya edə, həmçinin master-lərə ulduz və şərh yaza bilərlər.
-Barber-lər isə özləri haqqında və təqdim etdikləri xidmətlər haqqında məlumat verə bilərlər.
+master-lər isə özləri haqqında və təqdim etdikləri xidmətlər haqqında məlumat verə bilərlər.
 
 
 ---
@@ -21,7 +21,7 @@ Barber-lər isə özləri haqqında və təqdim etdikləri xidmətlər haqqında
 | `username`                  | `String`              | İstifadəçi adı                                        |
 | `email`                     | `String`              | Email ünvanı                                          |
 | `password`                  | `String`              | Şifrələnmiş parol                                     |
-| `role`                      | `RoleType` *(enum)*   | İstifadəçi rolu (**ADMIN**, **CUSTOMER**, **BARBER**) |
+| `role`                      | `RoleType` *(enum)*   | İstifadəçi rolu (**ADMIN**, **CUSTOMER**, **master**) |
 | `gender`                    | `GenderType` *(enum)* | Cinsi (**MALE**, **WOMAN**)                           |
 | `phoneNumber`               | `String`              | Telefon nömrəsi                                       |
 | `profilePicture`            | `String`              | Profil şəkli URL-i                                    |
@@ -38,7 +38,7 @@ Barber-lər isə özləri haqqında və təqdim etdikləri xidmətlər haqqında
 
 ---
 
-# Barber Entity
+# Master Entity
 
 **Cədvəl:** `master`
 
@@ -46,19 +46,20 @@ Bu entity bərbərləri və onların məlumatlarını təmsil edir.
 
 ## Sahələr
 
-| Sahə            | Tip                   | İzah                          |
-|-----------------|---------------------|-------------------------------|
-| `id`            | `Long`               | Unikal identifikator          |
-| `user`          | `User`               | Əlaqəli istifadəçi (OneToOne) |
-| `name`          | `String`             | Bərbərin adı                  |
-| `profilePhotoUrl` | `String`           | Profil şəkil URL-i            |
-| `galleryPhotos` | `List<String>`       | Bərbərin əlavə şəkil qalereyası |
-| `location`      | `String`             | Ünvan                         |
-| `rating`        | `Double`             | Ümumi reytinq                 |
-| `targetGender`  | `GenderType` *(enum)*| Xidmət etdiyi cins            |
-| `createdAt`     | `LocalDateTime`      | Yaradılma tarixi              |
-| `updatedAt`     | `LocalDateTime`      | Yenilənmə tarixi              |
-| `is_available`  | `Boolean`            | Mövcud olub-olmaması          |
+| Sahə              | Tip                   | İzah                                                   |
+|-------------------|-----------------------|--------------------------------------------------------|
+| `id`              | `Long`                | Unikal identifikator                                   |
+| `user`            | `User`                | Əlaqəli istifadəçi (OneToOne)                          |
+| `name`            | `String`              | Bərbərin adı                                           |
+| `profilePhotoUrl` | `String`              | Profil şəkil URL-i                                     |
+| `galleryPhotos`   | `List<String>`        | Bərbərin əlavə şəkil qalereyası                        |
+| `location`        | `String`              | Ünvan                                                  |
+| `rating`          | `Double`              | Ümumi reytinq                                          |
+| `targetGender`    | `GenderType` *(enum)* | Xidmət etdiyi cins                                     |
+| `createdAt`       | `LocalDateTime`       | Yaradılma tarixi                                       |
+| `updatedAt`       | `LocalDateTime`       | Yenilənmə tarixi                                       |
+| `is_available`    | `Boolean`             | Mövcud olub-olmaması                                   |
+| `masterType`       | `MasterType`          | |
 
 ## Əlaqələr
 
@@ -71,7 +72,7 @@ Bu entity bərbərləri və onların məlumatlarını təmsil edir.
 
 - `galleryPhotos` sahəsi `@ElementCollection` vasitəsilə əlavə şəkillərin saxlanması üçün istifadə olunur.
 - `is_available` sahəsi bərbərin hazırda mövcud olub-olmamasını göstərir.
-- OneToMany əlaqələr `mappedBy` atributu ilə `Barber` entity-si ilə əlaqələndirilmişdir.
+- OneToMany əlaqələr `mappedBy` atributu ilə `Master` entity-si ilə əlaqələndirilmişdir.
 - 
 ## is_available Sahəsi Haqqında
 
@@ -80,6 +81,10 @@ Bu entity bərbərləri və onların məlumatlarını təmsil edir.
 - Hər dəfə barber app-ə daxil olduqda, sistem avtomatik olaraq xəbərdarlıq göstərir.
 - Bu yolla, barberin bugünkü iş statusu real vaxtda izlənilə bilir.
 - Məqsəd: bərbər təcili iş üçün mövcud olduqda bunu qeyd edə bilir və müştəri də rahatlıqla görə bilir ki, bərbər hazırda işləyirmi və ya işdə deyil.
+
+## masterType Sahəsi Haqqında
+**masterType** o deməkdir ki, bunun bərbər, qadın saç ustası və yaxud da tatuaj/laser ustası olduğunu göstərmək üçün verilib.  
+Bunun səbəbi isə odur ki, biz front-end-də ona servisləri göstərərkən yalnız özünə aid olanları göstərəcəyik.
 
 ---
 
@@ -91,7 +96,7 @@ Bu entity bərbərləri və onların məlumatlarını təmsil edir.
 | ----------------- | ---------------------------- | --------------------------- |
 | `id`              | `Long`                       | Unikal identifikator        |
 | `customer`        | `User`                       | Rezervasiya edən istifadəçi |
-| `master`          | `Barber`                     | Rezervasiya olunan bərbər   |
+| `master`          | `master`                     | Rezervasiya olunan bərbər   |
 | `services`        | `List<Service>`              | Seçilmiş xidmətlər          |
 | `appointmentDate` | `LocalDate`                  | Tarix                       |
 | `appointmentTime` | `LocalTime`                  | Saat                        |
@@ -108,7 +113,7 @@ Bu entity bərbərləri və onların məlumatlarını təmsil edir.
 | Sahə              | Tip                    | İzah                       |
 | ----------------- | ---------------------- | -------------------------- |
 | `id`              | `Long`                 | Unikal identifikator       |
-| `master`          | `Barber`               | Xidmət sahibi bərbər       |
+| `master`          | `master`               | Xidmət sahibi bərbər       |
 | `serviceType`     | `ServiceType` *(enum)* | Xidmət növü                |
 | `description`     | `String`               | Təsviri                    |
 | `durationMinutes` | `Integer`              | Davametmə müddəti (dəqiqə) |
@@ -126,7 +131,7 @@ Bu entity bərbərləri və onların məlumatlarını təmsil edir.
 | ----------- | --------------- | -------------------- |
 | `id`        | `Long`          | Unikal identifikator |
 | `customer`  | `User`          | Rəyi yazan müştəri   |
-| `master`    | `Barber`        | Rəy yazılan bərbər   |
+| `master`    | `master`        | Rəy yazılan bərbər   |
 | `rating`    | `Integer`       | Ulduz sayı           |
 | `comment`   | `String`        | Rəy mətni            |
 | `createdAt` | `LocalDateTime` | Tarix                |
@@ -140,7 +145,7 @@ Bu entity bərbərləri və onların məlumatlarını təmsil edir.
 | Sahə        | Tip             | İzah                 |
 | ----------- | --------------- | -------------------- |
 | `id`        | `Long`          | Unikal identifikator |
-| `master`    | `Barber`        | Əlaqəli bərbər       |
+| `master`    | `master`        | Əlaqəli bərbər       |
 | `dayOfWeek` | `DayOfWeek`     | Həftənin günü        |
 | `startTime` | `LocalTime`     | İşin başlama vaxtı   |
 | `endTime`   | `LocalTime`     | İşin bitmə vaxtı     |
@@ -186,7 +191,15 @@ CANCELED    // Ləğv edilib
 ```java
 ADMIN,
 CUSTOMER,
-BARBER
+master
+```
+### **MasterType**
+
+```java
+BARBER,
+HAIRDRESSER,
+LASER,
+TATTOO
 ```
 
 ### **ServiceType**
@@ -219,15 +232,15 @@ HAIR_STRAIGHTENING
 
 ## Rollar
 
-İstifadəçilər **BARBER** və **CUSTOMER** rollarına ayrılır.
-Bunun məqsədi təhlükəsizliyi artırmaqdır — **CUSTOMER** kimi daxil olmuş istifadəçi **BARBER**-ə aid API-lərə müdaxilə edə bilməz.
+İstifadəçilər **MASTER** və **CUSTOMER** rollarına ayrılır.
+Bunun məqsədi təhlükəsizliyi artırmaqdır — **CUSTOMER** kimi daxil olmuş istifadəçi **MASTER**-ə aid API-lərə müdaxilə edə bilməz.
 
 ## API URL strukturu
 
 3 növ URL var (security əsaslı):
 
 * `/public/**` — authentication tələb etmir (misal: `/public/login`, `/public/register`)
-* `/master/**` — yalnız **BARBER** roluna icazə verilir
+* `/master/**` — yalnız **MASTER** roluna icazə verilir
 * `/customer/**` — yalnız **CUSTOMER** roluna icazə verilir
 
 Public URL-lərə aşağıdakılar daxildir:
@@ -256,11 +269,12 @@ POST {base_url}/public/register
 {
   "username": "exampleUser",
   "email": "user@example.com",
-  "password": "securePassword123",
-  "role": "ADMIN",
+  "password": "SecurePass123!",
+  "role": "ADMIN",  // ola bilər: "ADMIN", "CUSTOMER", "MASTER"
   "gender": "MALE",
-  "phoneNumber": "+1234567890",
+  "phoneNumber": "+1234567890"
 }
+
 ```
 
 > Frontend-də register zamanı ilk öncə istifadəçi `role` seçsin, sonra digər sahələri doldursun.
@@ -293,7 +307,7 @@ POST {base_url}/public/login
 {
   "accessToken": "string",
   "refreshToken": "string",
-  "roleType": "BARBER" / veya "CUSTOMER"
+  "roleType": "master" / veya "CUSTOMER"
 }
 ```
 
@@ -364,7 +378,7 @@ Aşağıda verdiyin məlumatları nəzərə alaraq **Appointment API** üçün s
 Hər iki rol üçün mövcuddur:
 
 * **Customer:** `{base_url}/customer/create-appointment`
-* **Barber:** `{base_url}/master/create-appointment`
+* **master:** `{base_url}/master/create-appointment`
 
 **Method:** `POST`
 
@@ -372,7 +386,7 @@ Hər iki rol üçün mövcuddur:
 
 ```json
 {
-  "barberId": 1,
+  "masterId": 1,
   "serviceIds": [67890, 54321],
   "appointmentDate": "2025-08-15",
   "appointmentTime": "14:30:00"
@@ -384,7 +398,7 @@ Hər iki rol üçün mövcuddur:
 ```json
 {
   "id": 56789,
-  "barberName": "John Smith",
+  "masterName": "John Smith",
   "customerName": "Jane Doe",
   "services": [
     {
@@ -417,8 +431,8 @@ Hər iki rol üçün mövcuddur:
 
 ## **2. Appointmentləri Oxumaq**
 
-**Endpoint:** `{base_url}/customer/read-appointments`
-**Method:** `GET`
+* **Endpoint:** `{base_url}/customer/read-appointments`
+* **Method:** `GET`
 **Request:** Tələb olunmur. Login olmuş istifadəçiyə aid bütün görüşlər (ən son ediləndən ən əvvələ doğru sıralanmış) qaytarılır.
 
 ### **Response**
@@ -427,7 +441,7 @@ Hər iki rol üçün mövcuddur:
 [
   {
     "id": 56789,
-    "barberName": "John Smith",
+    "masterName": "John Smith",
     "customerName": "Jane Doe",
     "services": [
       {
@@ -447,7 +461,7 @@ Hər iki rol üçün mövcuddur:
   },
   {
     "id": 56790,
-    "barberName": "John Smith",
+    "masterName": "John Smith",
     "customerName": "Peter Jones",
     "services": [
       {
@@ -462,7 +476,7 @@ Hər iki rol üçün mövcuddur:
   },
   {
     "id": 56791,
-    "barberName": "Emily White",
+    "masterName": "Emily White",
     "customerName": "Sarah Brown",
     "services": [
       {
@@ -487,8 +501,8 @@ Hər iki rol üçün mövcuddur:
 
 ## **3. Appointment Yeniləmək**
 
-**Endpoint:** `{base_url}/customer/update-appointment/{id}`
-**Method:** `PUT`
+* **Endpoint:** `{base_url}/customer/update-appointment/{id}`
+* **Method:** `PUT`
 
 ### **Request Body**
 
@@ -518,28 +532,28 @@ Hər iki rol üçün mövcuddur:
 
 ---
 
-Aşağıdakı kimi sənə uyğun **README.md** mətni hazırladım — sən bunu birbaşa layihənin kök qovluğuna qoysan, Barber API-ləri üçün izahlı sənəd olacaq.
+Aşağıdakı kimi sənə uyğun **README.md** mətni hazırladım — sən bunu birbaşa layihənin kök qovluğuna qoysan, master API-ləri üçün izahlı sənəd olacaq.
 
 ---
 
-# 💈 Barber (Entity) API Documentation
+## Master (Entity) API Documentation
 
-Bu sənəd, Barber rolundakı istifadəçilərin öz profilini idarə etməsi və müştərilərin barberlər haqqında məlumat axtarması üçün nəzərdə tutulmuş API-lərin təsvirini təqdim edir.
+Bu sənəd, master rolundakı istifadəçilərin öz profilini idarə etməsi və müştərilərin masterlər haqqında məlumat axtarması üçün nəzərdə tutulmuş API-lərin təsvirini təqdim edir.
 
 ---
 
 ## 🔍 Public Endpoints
 
-### 1. **Bütün Barberləri Oxumaq (Search Result)**
+### 1. **Bütün masterləri Oxumaq (Search Result)**
 
 **Endpoint:**
 
 ```
-GET {base_url}/public/get-barbers
+GET {base_url}/public/get-masters
 ```
 
 **Açıqlama:**
-Axtarış ekranında bütün barberləri göstərmək üçün istifadə olunur.
+Axtarış ekranında bütün masterləri göstərmək üçün istifadə olunur.
 
 **Response nümunəsi:**
 
@@ -604,7 +618,7 @@ Axtarış ekranında bütün barberləri göstərmək üçün istifadə olunur.
 
 ---
 
-### 2. **Barber Detalları (ID üzrə)**
+### 2. **master Detalları (ID üzrə)**
 
 **Endpoint:**
 
@@ -678,7 +692,7 @@ Seçilmiş master haqqında tam məlumat qaytarır.
 
 ## 💼 Barber Endpoints
 
-### 1. **Barber Profilini Görüntüləmək**
+### 1. **master Profilini Görüntüləmək**
 
 **Endpoint:**
 
@@ -743,23 +757,23 @@ GET {base_url}/master/profile
 ```
 
 **Açıqlama:**
-Giriş etmiş barberin profil məlumatlarını qaytarır.
+Giriş etmiş masterin profil məlumatlarını qaytarır.
 
 ---
 
-### 2. **Barber Profilini Yeniləmək**
+### 2. **master Profilini Yeniləmək**
 
 **Endpoint:**
 
 <<<<<<< HEAD
 ```
-PATCH {base_url}/master/update-barberProfile/
+PATCH {base_url}/master/update-masterProfile/
 ```
 =======
-## PATCH {base_url}/barber/update-barberProfile/
+## PATCH {base_url}/master/update-masterProfile/
 
 **Açıqlama:**  
-Bu endpoint **barberin profilini yeniləmək** üçün istifadə olunur.  
+Bu endpoint **masterin profilini yeniləmək** üçün istifadə olunur.  
 
 - Request body **entity**-yə əsaslanır və dinamikdir.  
 - Əlavə olaraq, istifadəçi profil şəkli və qalereya şəkilləri əlavə edə bilər.  
@@ -778,10 +792,9 @@ Bu endpoint **barberin profilini yeniləmək** üçün istifadə olunur.
 - `galleryPhotos` sahəsində maksimum 5 şəkil əlavə edilə bilər.  
 - Əlavə edilmiş şəkillər `galleryPhotos` listinə əlavə olunur və mövcud şəkillər dəyişdirilə bilər.
 
->>>>>>> 097e39b56b0edd1cb04bcc1af95d12accff93e76
 
 **Açıqlama:**
-Barberin profilini yeniləmək üçün istifadə olunur. Request body **entity**-yə əsaslanır və dinamikdir Əlavə olaraq burda şəkil seçiləcək.
+masterin profilini yeniləmək üçün istifadə olunur. Request body **entity**-yə əsaslanır və dinamikdir Əlavə olaraq burda şəkil seçiləcək.
 
 **Mümkün dəyişikliklər:**
 
@@ -793,7 +806,7 @@ Barberin profilini yeniləmək üçün istifadə olunur. Request body **entity**
 
 ## 📱 Frontend İstifadə Qaydası
 
-Barber rolunda giriş edən istifadəçi:
+master rolunda giriş edən istifadəçi:
 
 1. **Ana ekranda** profilini yaratmaq və ya yeniləmək imkanı görəcək.
 2. **Location** seçəcək.
@@ -802,8 +815,8 @@ Barber rolunda giriş edən istifadəçi:
 
 Müştəri tərəfdə isə:
 
-* **Axtarış ekranında** `get-barbers` endpoint-dən gələn siyahı göstərilir.
-* Seçilmiş barberin detalları `get-master/{id}` endpoint-i ilə gətirilir.
+* **Axtarış ekranında** `get-masters` endpoint-dən gələn siyahı göstərilir.
+* Seçilmiş masterin detalları `get-master/{id}` endpoint-i ilə gətirilir.
 
 ---
 Aşağıdakı kimi sadə və aydın şəkildə **Review** API üçün README hissəsi hazırladım:
@@ -814,7 +827,7 @@ Aşağıdakı kimi sadə və aydın şəkildə **Review** API üçün README his
 
 ### 1. **Review vermək (yalnız müştərilər üçün)**
 
-Barber rolundakı istifadəçilər review verə bilməzlər. Bu, barberlər arasında əsassız və mənasız rəylərin qarşısını almaq üçündür.
+master rolundakı istifadəçilər review verə bilməzlər. Bu, masterlər arasında əsassız və mənasız rəylərin qarşısını almaq üçündür.
 
 **Endpoint:**
 
@@ -822,7 +835,7 @@ Barber rolundakı istifadəçilər review verə bilməzlər. Bu, barberlər aras
 POST {base_url}/customer/give-review/{id}
 ```
 
-* `{id}` → Review veriləcək barberin unikal identifikatoru
+* `{id}` → Review veriləcək masterin unikal identifikatoru
 
 **Request Body:**
 
@@ -840,22 +853,22 @@ POST {base_url}/customer/give-review/{id}
 
 ### 2. **Review-ların göstərilməsi**
 
-Barberin bütün review-ları `GET {base_url}/public/get-master/{id}` endpointindən alınır və frontenddə barberin profili və ya detalları göstərilərkən görünür.
+masterin bütün review-ları `GET {base_url}/public/get-master/{id}` endpointindən alınır və frontenddə masterin profili və ya detalları göstərilərkən görünür.
 
 ---
 
 **Qeyd:**
 
 * Müştəri yalnız ulduz verə bilər, amma şərh yazarsa, ulduz vermək mütləqdir.
-* Barberlər review verə bilməz.
+* masterlər review verə bilməz.
 
 ---
 
 ---
 
-## 📅 Schedule (İş Qrafiki) API - Barber üçün
+## 📅 Schedule (İş Qrafiki) API - master üçün
 
-Barberlər öz iş saatlarını idarə etmək üçün bu endpointlərdən istifadə edirlər.
+masterlər öz iş saatlarını idarə etmək üçün bu endpointlərdən istifadə edirlər.
 
 ---
 
@@ -931,7 +944,7 @@ DELETE {base_url}/master/delete-schedule/{id}
 
 ---
 
-Bu endpointlər barberlərə öz iş günlərini və saatlarını rahat idarə etməyə imkan verir.
+Bu endpointlər masterlərə öz iş günlərini və saatlarını rahat idarə etməyə imkan verir.
 
 ---
 
@@ -939,7 +952,7 @@ Aşağıda **Service API** üçün README.md hissəsini hazırladım:
 
 ---
 
-## 💈 Service API - Barberin Təklif Etdiyi Xidmətlər
+## 💈 Service API - masterin Təklif Etdiyi Xidmətlər
 
 ---
 
@@ -1037,7 +1050,7 @@ GET {base_url}/master/read-service/{id}
 
 ---
 
-### 5. **Barberin bütün xidmətlərini oxumaq (gələcəkdə silinə bilər)**
+### 5. **masterin bütün xidmətlərini oxumaq (gələcəkdə silinə bilər)**
 
 **Endpoint:**
 
@@ -1045,7 +1058,7 @@ GET {base_url}/master/read-service/{id}
 GET {base_url}/master/read-services/
 ```
 
-* Bu endpoint barberin bütün xidmətlərini oxumaq üçün nəzərdə tutulub, amma məntiqi səbəbdən frontend-də istifadə etmək tövsiyə edilmir.
+* Bu endpoint masterin bütün xidmətlərini oxumaq üçün nəzərdə tutulub, amma məntiqi səbəbdən frontend-də istifadə etmək tövsiyə edilmir.
 * Xidmətlər, review-lar və cədvəllər (`schedules`) bir yerdə profil ekranına yüklənməsi daha uyğundur.
 
 ---
@@ -1064,13 +1077,13 @@ GET {base_url}/master/read-services/
 
 ### 2. **Profilin silinməsi**
 
-* İstifadəçilər və barberlər üçün profil silmək funksiyası əlavə edilməlidir.
+* İstifadəçilər və masterlər üçün profil silmək funksiyası əlavə edilməlidir.
 * Bu, hesabların idarəsi və təhlükəsizliyi baxımından vacibdir.
 
-### 3. **Barber axtarışı (search) funksiyası**
+### 3. **master axtarışı (search) funksiyası**
 
-* Barberləri ada görə axtarmaq funksiyası əlavə olunmalıdır.
-* Bu, istifadəçilərin sevdikləri barberləri daha asan tapması üçün önəmlidir.
+* masterləri ada görə axtarmaq funksiyası əlavə olunmalıdır.
+* Bu, istifadəçilərin sevdikləri masterləri daha asan tapması üçün önəmlidir.
 
 ### 4. **Appointment vaxtının idarəsi**
 

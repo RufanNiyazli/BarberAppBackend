@@ -1,6 +1,7 @@
 package com.project.barberreservation.dto.response;
 
 import com.project.barberreservation.enumtype.GenderType;
+import com.project.barberreservation.enumtype.MasterType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,9 +22,10 @@ public class MasterDetailedResponse {
 
     private Double rating;
     private GenderType targetGender;
+    private Boolean is_available;
+    private MasterType masterType;
 
     private List<ServiceResponse> services;
     private List<ReviewResponse> reviews;
     private List<ScheduleResponse> schedules;
-    private Boolean is_available;
 }
