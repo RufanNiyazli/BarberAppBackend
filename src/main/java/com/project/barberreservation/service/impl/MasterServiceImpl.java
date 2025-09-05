@@ -138,6 +138,7 @@ public class MasterServiceImpl implements IMasterService {
                 .rating(master.getRating())
                 .targetGender(master.getTargetGender())
                 .masterType(master.getMasterType())
+                .isProfileComplete(master.getIsProfileComplete())
                 .schedules(scheduleResponses)
                 .location(master.getLocation())
                 .name(master.getName())

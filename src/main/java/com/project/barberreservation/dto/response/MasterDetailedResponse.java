@@ -20,6 +20,8 @@ public class MasterDetailedResponse {
     private List<String> galleryPhotos;
     private String location;
 
+    private Boolean isProfileComplete;
+
     private Double rating;
     private GenderType targetGender;
     private Boolean is_available;
