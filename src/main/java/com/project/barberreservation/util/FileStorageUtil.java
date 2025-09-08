@@ -20,16 +20,21 @@ public class FileStorageUtil {
     @Value("${upload.dir.gallery}")
     private String galleryDir;
 
+    @Value("${server.url}")
+    private String serverUrl; // localhost:8080
+
     private final long MAX_FILE_SIZE = 250L * 1024 * 1024;
 
     public String saveProfilePhoto(MultipartFile file) throws IOException {
         validateFileSize(file);
-        return saveFile(file, profileDir);
+        String fileName = saveFile(file, profileDir);
+        return serverUrl + "/files/profile/" + fileName;
     }
 
     public String saveGalleryPhotos(MultipartFile file) throws IOException {
         validateFileSize(file);
-        return saveFile(file, galleryDir);
+        String fileName = saveFile(file, galleryDir);
+        return serverUrl + "/files/gallery/" + fileName;
     }
 
     private void validateFileSize(MultipartFile file) {
@@ -41,10 +46,10 @@ public class FileStorageUtil {
     private String saveFile(MultipartFile file, String dir) throws IOException {
         String fileExtension = getExtension(file.getOriginalFilename());
         String newFileName = UUID.randomUUID() + "." + fileExtension;
-        Path filePath = Paths.get(dir + newFileName);
+        Path filePath = Paths.get(dir, newFileName);
         Files.createDirectories(filePath.getParent());
         file.transferTo(filePath.toFile());
-        return filePath.toString();
+        return newFileName; // indi biz sadəcə fayl adını qaytarırıq
     }
 
     private String getExtension(String fileName) {

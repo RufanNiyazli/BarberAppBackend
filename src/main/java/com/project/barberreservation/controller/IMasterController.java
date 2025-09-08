@@ -16,7 +16,7 @@ public interface IMasterController {
 
     public MasterDetailedResponse readMasterProfileForOwnProfile();
 
-    public MasterDetailedResponse updateMasterProfile(Map<String, Object> updates,
+    public MasterDetailedResponse updateMasterProfile(String updates,
                                                       MultipartFile profilePhoto,
                                                       MultipartFile[] galleryPhotos) throws IOException;
 

@@ -1,5 +1,6 @@
 package com.project.barberreservation.controller.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.barberreservation.controller.IMasterController;
 import com.project.barberreservation.dto.response.MasterDetailedResponse;
 import com.project.barberreservation.dto.response.MasterResponse;
@@ -37,14 +38,21 @@ public class MasterControllerImpl implements IMasterController {
         return masterService.readMasterProfileForOwnProfile();
     }
 
-    @Override
-    @PatchMapping(value = "/master/update-masterProfile/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/master/update-masterProfile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public MasterDetailedResponse updateMasterProfile(
-            @RequestPart(required = false) Map<String, Object> updates,
+            @RequestPart(required = false) String updates,              // JSON string kimi alırıq
             @RequestPart(required = false) MultipartFile profilePhoto,
             @RequestPart(required = false) MultipartFile[] galleryPhotos
     ) throws IOException {
-        return masterService.updateMasterProfile(updates, profilePhoto, galleryPhotos);
+
+        Map<String, Object> updatesMap = null;
+
+        if (updates != null) {
+            // JSON string-i Map-ə çeviririk
+            updatesMap = new ObjectMapper().readValue(updates, Map.class);
+        }
+
+        return masterService.updateMasterProfile(updatesMap, profilePhoto, galleryPhotos);
     }
 
 }
