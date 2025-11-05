@@ -1,175 +1,171 @@
 
-# master App Backend
 
-Bu backend həm **customer** (müştəri), həm də **master** (bərbər) istifadəçilər üçün nəzərdə tutulmuşdur.
-Burada customer-lar qeydiyyatdan keçib master-ə rezervasiya edə, həmçinin master-lərə ulduz və şərh yaza bilərlər.
-master-lər isə özləri haqqında və təqdim etdikləri xidmətlər haqqında məlumat verə bilərlər.
-
+# An app like Booksy App Backend
 
 ---
 
-
-## 📌 Entity-lər və Tipləri
+## 📌 Entities and Types
 
 ### 1. **User**
 
-**Cədvəl:** `user`
+**Table:** `user`
 
-| Sahə                        | Tip                   | İzah                                                  |
-| --------------------------- | --------------------- | ----------------------------------------------------- |
-| `id`                        | `Long`                | Unikal identifikator                                  |
-| `username`                  | `String`              | İstifadəçi adı                                        |
-| `email`                     | `String`              | Email ünvanı                                          |
-| `password`                  | `String`              | Şifrələnmiş parol                                     |
-| `role`                      | `RoleType` *(enum)*   | İstifadəçi rolu (**ADMIN**, **CUSTOMER**, **master**) |
-| `gender`                    | `GenderType` *(enum)* | Cinsi (**MALE**, **WOMAN**)                           |
-| `phoneNumber`               | `String`              | Telefon nömrəsi                                       |
-| `profilePicture`            | `String`              | Profil şəkli URL-i                                    |
-| `createdAt`                 | `LocalDateTime`       | Yaradılma tarixi                                      |
-| `updatedAt`                 | `LocalDateTime`       | Yenilənmə tarixi                                      |
-| `verificationCodeExpiresAt` | `LocalDateTime`       | Doğrulama kodunun bitmə tarixi                        |
-| `verificationCode`          | `String`              | Email doğrulama kodu                                  |
-| `enabled`                   | `boolean`             | Hesab aktiv olub-olmaması                             |
+| Field                       | Type                  | Description                                     |
+| --------------------------- | --------------------- | ----------------------------------------------- |
+| `id`                        | `Long`                | Unique identifier                               |
+| `username`                  | `String`              | Username                                        |
+| `email`                     | `String`              | Email address                                   |
+| `password`                  | `String`              | Encrypted password                              |
+| `role`                      | `RoleType` *(enum)*   | User role (**ADMIN**, **CUSTOMER**, **MASTER**) |
+| `gender`                    | `GenderType` *(enum)* | Gender (**MALE**, **WOMAN**)                    |
+| `phoneNumber`               | `String`              | Phone number                                    |
+| `profilePicture`            | `String`              | Profile picture URL                             |
+| `createdAt`                 | `LocalDateTime`       | Creation date                                   |
+| `updatedAt`                 | `LocalDateTime`       | Last update date                                |
+| `verificationCodeExpiresAt` | `LocalDateTime`       | Verification code expiration date               |
+| `verificationCode`          | `String`              | Email verification code                         |
+| `enabled`                   | `boolean`             | Whether the account is active or not            |
 
-Əlaqələr:
+**Relationships:**
 
-* `List<Appointment>` — **OneToMany** (customer rezervasiyaları)
-* `List<RefreshToken>` — **OneToMany** (refresh tokenlər)
+* `List<Appointment>` — **OneToMany** (customer reservations)
+* `List<RefreshToken>` — **OneToMany** (refresh tokens)
 
 ---
 
 # Master Entity
 
-**Cədvəl:** `master`
+**Table:** `master`
 
-Bu entity bərbərləri və onların məlumatlarını təmsil edir.
+This entity represents barbers (masters) and their detailed information.
 
-## Sahələr
+## Fields
 
-| Sahə              | Tip                   | İzah                                                   |
-|-------------------|-----------------------|--------------------------------------------------------|
-| `id`              | `Long`                | Unikal identifikator                                   |
-| `user`            | `User`                | Əlaqəli istifadəçi (OneToOne)                          |
-| `name`            | `String`              | Bərbərin adı                                           |
-| `profilePhotoUrl` | `String`              | Profil şəkil URL-i                                     |
-| `galleryPhotos`   | `List<String>`        | Bərbərin əlavə şəkil qalereyası                        |
-| `location`        | `String`              | Ünvan                                                  |
-| `rating`          | `Double`              | Ümumi reytinq                                          |
-| `targetGender`    | `GenderType` *(enum)* | Xidmət etdiyi cins                                     |
-| `createdAt`       | `LocalDateTime`       | Yaradılma tarixi                                       |
-| `updatedAt`       | `LocalDateTime`       | Yenilənmə tarixi                                       |
-| `is_available`    | `Boolean`             | Mövcud olub-olmaması                                   |
-| `masterType`       | `MasterType`          | |
+| Field             | Type                  | Description                                |
+| ----------------- | --------------------- | ------------------------------------------ |
+| `id`              | `Long`                | Unique identifier                          |
+| `user`            | `User`                | Associated user (OneToOne)                 |
+| `name`            | `String`              | Master’s name                              |
+| `profilePhotoUrl` | `String`              | Profile picture URL                        |
+| `galleryPhotos`   | `List<String>`        | Gallery of additional photos               |
+| `location`        | `String`              | Address                                    |
+| `rating`          | `Double`              | Overall rating                             |
+| `targetGender`    | `GenderType` *(enum)* | Gender served                              |
+| `createdAt`       | `LocalDateTime`       | Creation date                              |
+| `updatedAt`       | `LocalDateTime`       | Last update date                           |
+| `is_available`    | `Boolean`             | Availability status                        |
+| `masterType`      | `MasterType`          | Type of master (Barber, Hairdresser, etc.) |
 
-## Əlaqələr
+## Relationships
 
-* `List<Service>` — **OneToMany** (təklif olunan xidmətlər)
-* `List<Appointment>` — **OneToMany** (qəbul edilən rezervasiyalar)
-* `List<Review>` — **OneToMany** (müştəri rəyləri)
-* `List<Schedule>` — **OneToMany** (iş qrafiki)
+* `List<Service>` — **OneToMany** (offered services)
+* `List<Appointment>` — **OneToMany** (accepted appointments)
+* `List<Review>` — **OneToMany** (customer reviews)
+* `List<Schedule>` — **OneToMany** (work schedule)
 
-## Qeyd
+## Notes
 
-- `galleryPhotos` sahəsi `@ElementCollection` vasitəsilə əlavə şəkillərin saxlanması üçün istifadə olunur.
-- `is_available` sahəsi bərbərin hazırda mövcud olub-olmamasını göstərir.
-- OneToMany əlaqələr `mappedBy` atributu ilə `Master` entity-si ilə əlaqələndirilmişdir.
-- 
-## is_available Sahəsi Haqqında
+* `galleryPhotos` uses `@ElementCollection` to store multiple images.
+* `is_available` shows whether the master is currently available.
+* All OneToMany relations are mapped via the `mappedBy` attribute.
 
-- `is_available` sahəsi **həmişə default olaraq `false`** olaraq təyin olunub.
-- Bu sahə bərbərin **bugün işləyib-işləmədiyini** göstərmək üçün istifadə olunur.
-- Hər dəfə barber app-ə daxil olduqda, sistem avtomatik olaraq xəbərdarlıq göstərir.
-- Bu yolla, barberin bugünkü iş statusu real vaxtda izlənilə bilir.
-- Məqsəd: bərbər təcili iş üçün mövcud olduqda bunu qeyd edə bilir və müştəri də rahatlıqla görə bilir ki, bərbər hazırda işləyirmi və ya işdə deyil.
+### About `is_available` Field
 
-## masterType Sahəsi Haqqında
-**masterType** o deməkdir ki, bunun bərbər, qadın saç ustası və yaxud da tatuaj/laser ustası olduğunu göstərmək üçün verilib.  
-Bunun səbəbi isə odur ki, biz front-end-də ona servisləri göstərərkən yalnız özünə aid olanları göstərəcəyik.
+* The field **defaults to `false`**.
+* Indicates whether the master is **working today**.
+* Each time the master opens the app, the system shows a notification.
+* This allows real-time monitoring of the master’s daily work status.
+* Purpose: helps customers see if a master is currently active or unavailable.
+
+### About `masterType` Field
+
+* Indicates whether this person is a **barber**, **hairdresser**, or **tattoo/laser artist**.
+* Purpose: to ensure only relevant service types appear for that master type on the frontend.
 
 ---
 
 ### 3. **Appointment**
 
-**Cədvəl:** `appointment`
+**Table:** `appointment`
 
-| Sahə              | Tip                          | İzah                        |
-| ----------------- | ---------------------------- | --------------------------- |
-| `id`              | `Long`                       | Unikal identifikator        |
-| `customer`        | `User`                       | Rezervasiya edən istifadəçi |
-| `master`          | `master`                     | Rezervasiya olunan bərbər   |
-| `services`        | `List<Service>`              | Seçilmiş xidmətlər          |
-| `appointmentDate` | `LocalDate`                  | Tarix                       |
-| `appointmentTime` | `LocalTime`                  | Saat                        |
-| `status`          | `ReservationStatus` *(enum)* | Rezervasiya statusu         |
-| `createdAt`       | `LocalDateTime`              | Yaradılma tarixi            |
-| `updatedAt`       | `LocalDateTime`              | Yenilənmə tarixi            |
+| Field             | Type                         | Description               |
+| ----------------- | ---------------------------- | ------------------------- |
+| `id`              | `Long`                       | Unique identifier         |
+| `customer`        | `User`                       | Customer who made booking |
+| `master`          | `Master`                     | Booked master             |
+| `services`        | `List<Service>`              | Selected services         |
+| `appointmentDate` | `LocalDate`                  | Appointment date          |
+| `appointmentTime` | `LocalTime`                  | Appointment start time    |
+| `status`          | `ReservationStatus` *(enum)* | Reservation status        |
+| `createdAt`       | `LocalDateTime`              | Creation date             |
+| `updatedAt`       | `LocalDateTime`              | Last update date          |
 
 ---
 
 ### 4. **Service**
 
-**Cədvəl:** `service`
+**Table:** `service`
 
-| Sahə              | Tip                    | İzah                       |
-| ----------------- | ---------------------- | -------------------------- |
-| `id`              | `Long`                 | Unikal identifikator       |
-| `master`          | `master`               | Xidmət sahibi bərbər       |
-| `serviceType`     | `ServiceType` *(enum)* | Xidmət növü                |
-| `description`     | `String`               | Təsviri                    |
-| `durationMinutes` | `Integer`              | Davametmə müddəti (dəqiqə) |
-| `price`           | `Double`               | Qiymət                     |
-| `createdAt`       | `LocalDateTime`        | Yaradılma tarixi           |
-| `updatedAt`       | `LocalDateTime`        | Yenilənmə tarixi           |
+| Field             | Type                   | Description             |
+| ----------------- | ---------------------- | ----------------------- |
+| `id`              | `Long`                 | Unique identifier       |
+| `master`          | `Master`               | Master offering service |
+| `serviceType`     | `ServiceType` *(enum)* | Type of service         |
+| `description`     | `String`               | Service description     |
+| `durationMinutes` | `Integer`              | Duration in minutes     |
+| `price`           | `Double`               | Service price           |
+| `createdAt`       | `LocalDateTime`        | Creation date           |
+| `updatedAt`       | `LocalDateTime`        | Last update date        |
 
 ---
 
 ### 5. **Review**
 
-**Cədvəl:** `reviews`
+**Table:** `reviews`
 
-| Sahə        | Tip             | İzah                 |
-| ----------- | --------------- | -------------------- |
-| `id`        | `Long`          | Unikal identifikator |
-| `customer`  | `User`          | Rəyi yazan müştəri   |
-| `master`    | `master`        | Rəy yazılan bərbər   |
-| `rating`    | `Integer`       | Ulduz sayı           |
-| `comment`   | `String`        | Rəy mətni            |
-| `createdAt` | `LocalDateTime` | Tarix                |
+| Field       | Type            | Description           |
+| ----------- | --------------- | --------------------- |
+| `id`        | `Long`          | Unique identifier     |
+| `customer`  | `User`          | Customer who reviewed |
+| `master`    | `Master`        | Reviewed master       |
+| `rating`    | `Integer`       | Rating (1–5 stars)    |
+| `comment`   | `String`        | Review text           |
+| `createdAt` | `LocalDateTime` | Created at            |
 
 ---
 
 ### 6. **Schedule**
 
-**Cədvəl:** `schedule`
+**Table:** `schedule`
 
-| Sahə        | Tip             | İzah                 |
-| ----------- | --------------- | -------------------- |
-| `id`        | `Long`          | Unikal identifikator |
-| `master`    | `master`        | Əlaqəli bərbər       |
-| `dayOfWeek` | `DayOfWeek`     | Həftənin günü        |
-| `startTime` | `LocalTime`     | İşin başlama vaxtı   |
-| `endTime`   | `LocalTime`     | İşin bitmə vaxtı     |
-| `createdAt` | `LocalDateTime` | Yaradılma tarixi     |
-| `updatedAt` | `LocalDateTime` | Yenilənmə tarixi     |
+| Field       | Type            | Description       |
+| ----------- | --------------- | ----------------- |
+| `id`        | `Long`          | Unique identifier |
+| `master`    | `Master`        | Related master    |
+| `dayOfWeek` | `DayOfWeek`     | Day of the week   |
+| `startTime` | `LocalTime`     | Work start time   |
+| `endTime`   | `LocalTime`     | Work end time     |
+| `createdAt` | `LocalDateTime` | Creation date     |
+| `updatedAt` | `LocalDateTime` | Last update date  |
 
 ---
 
 ### 7. **RefreshToken**
 
-**Cədvəl:** `refresh_token`
+**Table:** `refresh_token`
 
-| Sahə        | Tip       | İzah                    |
-| ----------- | --------- | ----------------------- |
-| `id`        | `Long`    | Unikal identifikator    |
-| `token`     | `String`  | Refresh token string    |
-| `createdAt` | `Date`    | Yaradılma tarixi        |
-| `expiredAt` | `Date`    | Bitmə tarixi            |
-| `revoked`   | `boolean` | Ləğv edilib/edilməyib   |
-| `user`      | `User`    | Token sahibi istifadəçi |
+| Field       | Type      | Description            |
+| ----------- | --------- | ---------------------- |
+| `id`        | `Long`    | Unique identifier      |
+| `token`     | `String`  | Refresh token string   |
+| `createdAt` | `Date`    | Creation date          |
+| `expiredAt` | `Date`    | Expiration date        |
+| `revoked`   | `boolean` | Whether revoked or not |
+| `user`      | `User`    | Token owner (user)     |
 
 ---
 
-## 📌 Enum-lar və Dəyərlər
+## 📌 Enums and Values
 
 ### **GenderType**
 
@@ -181,9 +177,9 @@ WOMAN
 ### **ReservationStatus**
 
 ```java
-PENDING,    // Gözləmədə
-CONFIRMED,  // Təsdiqlənib
-CANCELED    // Ləğv edilib
+PENDING,    // Waiting
+CONFIRMED,  // Confirmed
+CANCELED    // Canceled
 ```
 
 ### **RoleType**
@@ -191,8 +187,9 @@ CANCELED    // Ləğv edilib
 ```java
 ADMIN,
 CUSTOMER,
-master
+MASTER
 ```
+
 ### **MasterType**
 
 ```java
@@ -227,23 +224,20 @@ HAIR_STRAIGHTENING
 
 ---
 
+## Roles
 
+Users are divided into **MASTER** and **CUSTOMER** roles to improve security —
+a **CUSTOMER** cannot access **MASTER** endpoints.
 
+## API URL Structure
 
-## Rollar
+There are 3 types of endpoints (based on security rules):
 
-İstifadəçilər **MASTER** və **CUSTOMER** rollarına ayrılır.
-Bunun məqsədi təhlükəsizliyi artırmaqdır — **CUSTOMER** kimi daxil olmuş istifadəçi **MASTER**-ə aid API-lərə müdaxilə edə bilməz.
+* `/public/**` — does **not** require authentication (e.g. `/public/login`, `/public/register`)
+* `/master/**` — only accessible by **MASTER** users
+* `/customer/**` — only accessible by **CUSTOMER** users
 
-## API URL strukturu
-
-3 növ URL var (security əsaslı):
-
-* `/public/**` — authentication tələb etmir (misal: `/public/login`, `/public/register`)
-* `/master/**` — yalnız **MASTER** roluna icazə verilir
-* `/customer/**` — yalnız **CUSTOMER** roluna icazə verilir
-
-Public URL-lərə aşağıdakılar daxildir:
+**Public endpoints include:**
 
 * `/public/login`
 * `/public/register`
@@ -253,7 +247,7 @@ Public URL-lərə aşağıdakılar daxildir:
 
 ---
 
-## Auth Sistemi
+## Auth System
 
 ### Register
 
@@ -263,22 +257,21 @@ Public URL-lərə aşağıdakılar daxildir:
 POST {base_url}/public/register
 ```
 
-**Request body (JSON):**
+**Request Body (JSON):**
 
 ```json
 {
   "username": "exampleUser",
   "email": "user@example.com",
   "password": "SecurePass123!",
-  "role": "ADMIN",  // ola bilər: "ADMIN", "CUSTOMER", "MASTER"
+  "role": "ADMIN",  // can be "ADMIN", "CUSTOMER", or "MASTER"
   "gender": "MALE",
   "phoneNumber": "+1234567890"
 }
-
 ```
 
-> Frontend-də register zamanı ilk öncə istifadəçi `role` seçsin, sonra digər sahələri doldursun.
-> `gender` seçiminin məqsədi istifadəçiyə uyğun (gender-based) master-ləri göstərməkdir.
+> On the frontend, users should first choose a `role`, then fill in other details.
+> The `gender` field helps show gender-based master recommendations.
 
 ---
 
@@ -290,7 +283,7 @@ POST {base_url}/public/register
 POST {base_url}/public/login
 ```
 
-**Request body (JSON):**
+**Request Body (JSON):**
 
 ```json
 {
@@ -299,21 +292,21 @@ POST {base_url}/public/login
 }
 ```
 
-> Login zamanı frontend `role` göndərməlidir deyə bir tələb yoxdur — backend email-ə əsaslanaraq istifadəçinin rolunu tapır və frontend bu role-a görə fərqli dizayn göstərə bilər.
+> No need to send the role during login — the backend identifies the user role by email.
 
-**Register və Login response formatı (JSON):**
+**Register & Login Response (JSON):**
 
 ```json
 {
   "accessToken": "string",
   "refreshToken": "string",
-  "roleType": "master" / veya "CUSTOMER"
+  "roleType": "MASTER" // or "CUSTOMER"
 }
 ```
 
 ---
 
-### Email doğrulaması
+### Email Verification
 
 **Endpoint:**
 
@@ -321,7 +314,7 @@ POST {base_url}/public/login
 POST {base_url}/public/verify-user
 ```
 
-**Request body (JSON):**
+**Request Body:**
 
 ```json
 {
@@ -332,9 +325,9 @@ POST {base_url}/public/verify-user
 
 ---
 
-### Access Token yeniləmə
+### Access Token Refresh
 
-> Qeyd: **accessToken = 2 saat**, **refreshToken = 24 saat**
+> **accessToken = 2 hours**, **refreshToken = 24 hours**
 
 **Endpoint:**
 
@@ -342,7 +335,7 @@ POST {base_url}/public/verify-user
 POST {base_url}/public/refresh-accessToken
 ```
 
-**Request body (JSON):**
+**Request Body:**
 
 ```json
 {
@@ -352,7 +345,7 @@ POST {base_url}/public/refresh-accessToken
 
 ---
 
-### Verification kodunu yenidən göndərmək
+### Resend Verification Code
 
 **Endpoint:**
 
@@ -360,29 +353,26 @@ POST {base_url}/public/refresh-accessToken
 POST {base_url}/public/resend-code
 ```
 
-**Request body:**
+**Request Body:**
 
 ```
 "user@example.com"
 ```
 
-Aşağıda verdiyin məlumatları nəzərə alaraq **Appointment API** üçün səliqəli `README.md` formatını hazırladım:
-
 ---
 
-# Appointment API Documentation
+## 📅 Appointment API Documentation
 
+### 1. **Create Appointment**
 
-## **1. Appointment Yaratmaq**
-
-Hər iki rol üçün mövcuddur:
+Available for both roles:
 
 * **Customer:** `{base_url}/customer/create-appointment`
-* **master:** `{base_url}/master/create-appointment`
+* **Master:** `{base_url}/master/create-appointment`
 
 **Method:** `POST`
 
-### **Request Body**
+**Request Body:**
 
 ```json
 {
@@ -393,7 +383,7 @@ Hər iki rol üçün mövcuddur:
 }
 ```
 
-### **Response**
+**Response:**
 
 ```json
 {
@@ -417,25 +407,26 @@ Hər iki rol üçün mövcuddur:
   "appointmentEndTime": "11:00:00",
   "status": "CONFIRMED"
 }
-
 ```
-## appointmentEndTime Sahəsi Haqqında
 
-- `appointmentEndTime` sahəsi **avtomatik təyin olunur**.
-- Hər bir xidmətin müddəti nəzərə alınaraq hesablanır.  
-  Məsələn, saç kəsimi 30 dəqiqə çəkirsə, bu müddət avtomatik olaraq `appointmentTime`-a əlavə olunur.
-- Əlavə olaraq, sistem 10 dəqiqə **buffer vaxtı** da əlavə edir ki, növbəti rezervasiya üçün vaxt qalır.
-- Bu sahə müştəri və bərbər üçün görüşün real son vaxtını göstərir və düzgün planlaşdırma təmin edir.
+#### About `appointmentEndTime`
+
+* Automatically calculated.
+* Based on total duration of selected services.
+* An extra 10-minute **buffer** is added for scheduling flexibility.
+* This ensures accurate time management for both the customer and master.
 
 ---
 
-## **2. Appointmentləri Oxumaq**
+### 2. **Get All Appointments**
 
-* **Endpoint:** `{base_url}/customer/read-appointments`
-* **Method:** `GET`
-**Request:** Tələb olunmur. Login olmuş istifadəçiyə aid bütün görüşlər (ən son ediləndən ən əvvələ doğru sıralanmış) qaytarılır.
+**Endpoint:** `{base_url}/customer/read-appointments`
+**Method:** `GET`
 
-### **Response**
+No request body.
+Returns all appointments belonging to the logged-in user, sorted from newest to oldest.
+
+**Response:**
 
 ```json
 [
@@ -458,53 +449,18 @@ Hər iki rol üçün mövcuddur:
     "appointmentDate": "2025-08-15",
     "appointmentTime": "10:00:00",
     "status": "CONFIRMED"
-  },
-  {
-    "id": 56790,
-    "masterName": "John Smith",
-    "customerName": "Peter Jones",
-    "services": [
-      {
-        "serviceId": 103,
-        "serviceName": "Shave",
-        "price": 20.00
-      }
-    ],
-    "appointmentDate": "2025-08-15",
-    "appointmentTime": "11:30:00",
-    "status": "PENDING"
-  },
-  {
-    "id": 56791,
-    "masterName": "Emily White",
-    "customerName": "Sarah Brown",
-    "services": [
-      {
-        "serviceId": 101,
-        "serviceName": "Haircut",
-        "price": 30.00
-      },
-      {
-        "serviceId": 104,
-        "serviceName": "Coloring",
-        "price": 80.00
-      }
-    ],
-    "appointmentDate": "2025-08-16",
-    "appointmentTime": "09:00:00",
-    "status": "COMPLETED"
   }
 ]
 ```
 
 ---
 
-## **3. Appointment Yeniləmək**
+### 3. **Update Appointment**
 
-* **Endpoint:** `{base_url}/customer/update-appointment/{id}`
-* **Method:** `PUT`
+**Endpoint:** `{base_url}/customer/update-appointment/{id}`
+**Method:** `PUT`
 
-### **Request Body**
+**Request Body:**
 
 ```json
 {
@@ -514,37 +470,29 @@ Hər iki rol üçün mövcuddur:
 }
 ```
 
-### **Response**
-
-`createAppointment` endpointində olduğu formatda qaytarılır.
+Response same as `create-appointment`.
 
 ---
 
-## **4. Appointment Silmək**
+### 4. **Delete Appointment**
 
 **Endpoint:** `{base_url}/customer/update-appointment/{id}`
 **Method:** `DELETE`
 
-### **Request:**
-
-* Sadəcə `id` URL-də göndərilir.
-* Response olaraq heç nə qaytarılmır.
+No request body.
+Returns no content.
 
 ---
 
-Aşağıdakı kimi sənə uyğun **README.md** mətni hazırladım — sən bunu birbaşa layihənin kök qovluğuna qoysan, master API-ləri üçün izahlı sənəd olacaq.
+## 💈 Master (Entity) API Documentation
+
+This section describes APIs for managing master profiles and public access for customers.
 
 ---
 
-## Master (Entity) API Documentation
+### 🔍 Public Endpoints
 
-Bu sənəd, master rolundakı istifadəçilərin öz profilini idarə etməsi və müştərilərin masterlər haqqında məlumat axtarması üçün nəzərdə tutulmuş API-lərin təsvirini təqdim edir.
-
----
-
-## 🔍 Public Endpoints
-
-### 1. **Bütün masterləri Oxumaq (Search Result)**
+#### 1. **Get All Masters**
 
 **Endpoint:**
 
@@ -552,73 +500,31 @@ Bu sənəd, master rolundakı istifadəçilərin öz profilini idarə etməsi v�
 GET {base_url}/public/get-masters
 ```
 
-**Açıqlama:**
-Axtarış ekranında bütün masterləri göstərmək üçün istifadə olunur.
+Shows all masters (for search screens).
 
-**Response nümunəsi:**
+**Response Example:**
 
 ```json
 [
-{
-  "id": 12345,
-  "name": "John Smith",
-  "profilePhotoUrl": "https://example.com/profiles/john_smith.jpg",
-  "galleryPhotos": [
-    "https://example.com/gallery/photo1.jpg",
-    "https://example.com/gallery/photo2.jpg"
-  ],
-  "location": "123 Main Street, Baku, Azerbaijan",
-  "rating": 4.8,
-  "targetGender": "MALE",
-  "services": [
-    {
-      "serviceId": 101,
-      "serviceName": "Haircut",
-      "price": 15.0,
-      "durationMinutes": 30
-    },
-    {
-      "serviceId": 102,
-      "serviceName": "Keratin Treatment",
-      "price": 30.0,
-      "durationMinutes": 60
-    }
-  ],
-  "reviews": [
-    {
-      "reviewId": 201,
-      "customerName": "Jane Doe",
-      "rating": 5,
-      "comment": "Great haircut!"
-    },
-    {
-      "reviewId": 202,
-      "customerName": "Alex Brown",
-      "rating": 4,
-      "comment": "Friendly and professional."
-    }
-  ],
-  "schedules": [
-    {
-      "dayOfWeek": "MONDAY",
-      "startTime": "09:00:00",
-      "endTime": "18:00:00"
-    },
-    {
-      "dayOfWeek": "TUESDAY",
-      "startTime": "09:00:00",
-      "endTime": "18:00:00"
-    }
-  ],
-  "is_available": false
-}
-
+  {
+    "id": 12345,
+    "name": "John Smith",
+    "profilePhotoUrl": "https://example.com/john.jpg",
+    "galleryPhotos": ["https://example.com/gallery1.jpg"],
+    "location": "123 Main St, Baku",
+    "rating": 4.8,
+    "targetGender": "MALE",
+    "services": [...],
+    "reviews": [...],
+    "schedules": [...],
+    "is_available": false
+  }
 ]
 ```
 
 ---
 
-### 2. **master Detalları (ID üzrə)**
+#### 2. **Get Master by ID**
 
 **Endpoint:**
 
@@ -626,208 +532,46 @@ Axtarış ekranında bütün masterləri göstərmək üçün istifadə olunur.
 GET {base_url}/public/get-master/{id}
 ```
 
-**Açıqlama:**
-Seçilmiş master haqqında tam məlumat qaytarır.
-
-**Response nümunəsi:**
-
-```json
-{
-  "id": 12345,
-  "name": "John Smith",
-  "profilePhotoUrl": "https://example.com/profiles/john_smith.jpg",
-  "galleryPhotos": [
-    "https://example.com/gallery/photo1.jpg",
-    "https://example.com/gallery/photo2.jpg"
-  ],
-  "location": "123 Main Street, Baku, Azerbaijan",
-  "rating": 4.8,
-  "targetGender": "MALE",
-  "services": [
-    {
-      "serviceId": 101,
-      "serviceName": "Haircut",
-      "price": 15.0,
-      "durationMinutes": 30
-    },
-    {
-      "serviceId": 102,
-      "serviceName": "Keratin Treatment",
-      "price": 30.0,
-      "durationMinutes": 60
-    }
-  ],
-  "reviews": [
-    {
-      "reviewId": 201,
-      "customerName": "Jane Doe",
-      "rating": 5,
-      "comment": "Great haircut!"
-    },
-    {
-      "reviewId": 202,
-      "customerName": "Alex Brown",
-      "rating": 4,
-      "comment": "Friendly and professional."
-    }
-  ],
-  "schedules": [
-    {
-      "dayOfWeek": "MONDAY",
-      "startTime": "09:00:00",
-      "endTime": "18:00:00"
-    },
-    {
-      "dayOfWeek": "TUESDAY",
-      "startTime": "09:00:00",
-      "endTime": "18:00:00"
-    }
-  ],
-  "is_available": false
-}
-
-```
+Returns detailed info about a selected master.
 
 ---
 
-## 💼 Barber Endpoints
+### 💼 Master Endpoints
 
-### 1. **master Profilini Görüntüləmək**
+#### 1. **View Master Profile**
 
 **Endpoint:**
 
 ```
 GET {base_url}/master/profile
 ```
-**Response**
-```json
-{
-  "id": 12345,
-  "name": "John Smith",
-  "profilePhotoUrl": "https://example.com/profiles/john_smith.jpg",
-  "galleryPhotos": [
-    "https://example.com/gallery/photo1.jpg",
-    "https://example.com/gallery/photo2.jpg"
-  ],
-  "location": "123 Main Street, Baku, Azerbaijan",
-  "rating": 4.8,
-  "targetGender": "MALE",
-  "services": [
-    {
-      "serviceId": 101,
-      "serviceName": "Haircut",
-      "price": 15.0,
-      "durationMinutes": 30
-    },
-    {
-      "serviceId": 102,
-      "serviceName": "Keratin Treatment",
-      "price": 30.0,
-      "durationMinutes": 60
-    }
-  ],
-  "reviews": [
-    {
-      "reviewId": 201,
-      "customerName": "Jane Doe",
-      "rating": 5,
-      "comment": "Great haircut!"
-    },
-    {
-      "reviewId": 202,
-      "customerName": "Alex Brown",
-      "rating": 4,
-      "comment": "Friendly and professional."
-    }
-  ],
-  "schedules": [
-    {
-      "dayOfWeek": "MONDAY",
-      "startTime": "09:00:00",
-      "endTime": "18:00:00"
-    },
-    {
-      "dayOfWeek": "TUESDAY",
-      "startTime": "09:00:00",
-      "endTime": "18:00:00"
-    }
-  ],
-  "is_available": false
-}
-```
 
-**Açıqlama:**
-Giriş etmiş masterin profil məlumatlarını qaytarır.
+Shows the logged-in master’s full profile data.
 
 ---
 
-### 2. **master Profilini Yeniləmək**
+#### 2. **Update Master Profile**
 
 **Endpoint:**
 
-<<<<<<< HEAD
 ```
 PATCH {base_url}/master/update-masterProfile/
 ```
-=======
-## PATCH {base_url}/master/update-masterProfile/
 
-**Açıqlama:**  
-Bu endpoint **masterin profilini yeniləmək** üçün istifadə olunur.  
+**Description:**
+Used to update master profile details, including images.
 
-- Request body **entity**-yə əsaslanır və dinamikdir.  
-- Əlavə olaraq, istifadəçi profil şəkli və qalereya şəkilləri əlavə edə bilər.  
-
-### Parametrlər
-
-| Parametr        | Tip                       | İzah |
-|-----------------|---------------------------|------|
-| `updates`       | `Map<String, Object>`     | Yenilənəcək sahələr və onların dəyərləri |
-| `profilePhoto`  | `MultipartFile`           | Profil şəkli (yalnız 1 şəkil seçilə bilər) |
-| `galleryPhotos` | `MultipartFile[]`         | Qalereya üçün əlavə şəkillər (maksimum 5 şəkil seçilə bilər) |
-
-### Qeyd
-
-- `profilePhoto` sahəsi yalnız bir şəkil üçün nəzərdə tutulub.  
-- `galleryPhotos` sahəsində maksimum 5 şəkil əlavə edilə bilər.  
-- Əlavə edilmiş şəkillər `galleryPhotos` listinə əlavə olunur və mövcud şəkillər dəyişdirilə bilər.
-
-
-**Açıqlama:**
-masterin profilini yeniləmək üçün istifadə olunur. Request body **entity**-yə əsaslanır və dinamikdir Əlavə olaraq burda şəkil seçiləcək.
-
-**Mümkün dəyişikliklər:**
-
-* **location** — İş ünvanı
-* **services** — Təklif olunan xidmətlər və qiymətləri
-* **schedules** — İş günləri və saatları
-
----
-
-## 📱 Frontend İstifadə Qaydası
-
-master rolunda giriş edən istifadəçi:
-
-1. **Ana ekranda** profilini yaratmaq və ya yeniləmək imkanı görəcək.
-2. **Location** seçəcək.
-3. **Xidmətlər** və qiymətləri əlavə edəcək.
-4. **İş saatlarını** müəyyən edəcək.
-
-Müştəri tərəfdə isə:
-
-* **Axtarış ekranında** `get-masters` endpoint-dən gələn siyahı göstərilir.
-* Seçilmiş masterin detalları `get-master/{id}` endpoint-i ilə gətirilir.
-
----
-Aşağıdakı kimi sadə və aydın şəkildə **Review** API üçün README hissəsi hazırladım:
+| Parameter       | Type                  | Description                         |
+| --------------- | --------------------- | ----------------------------------- |
+| `updates`       | `Map<String, Object>` | Key-value pairs of fields to update |
+| `profilePhoto`  | `MultipartFile`       | Single profile photo                |
+| `galleryPhotos` | `MultipartFile[]`     | Up to 5 gallery photos              |
 
 ---
 
 ## ⭐ Review API
 
-### 1. **Review vermək (yalnız müştərilər üçün)**
-
-master rolundakı istifadəçilər review verə bilməzlər. Bu, masterlər arasında əsassız və mənasız rəylərin qarşısını almaq üçündür.
+### 1. **Submit Review (Customers Only)**
 
 **Endpoint:**
 
@@ -835,44 +579,36 @@ master rolundakı istifadəçilər review verə bilməzlər. Bu, masterlər aras
 POST {base_url}/customer/give-review/{id}
 ```
 
-* `{id}` → Review veriləcək masterin unikal identifikatoru
+`{id}` — Master ID being reviewed.
 
 **Request Body:**
 
 ```json
 {
   "rating": 5,
-  "comment": "Great service and a fantastic haircut!"
+  "comment": "Excellent service!"
 }
 ```
 
-* `rating` — Ulduz sayı (mütləq olmalıdır, 1-5 arası)
-* `comment` — Şərh (istəyə bağlı, amma yazılarsa, `rating` mütləq olmalıdır)
+* `rating` is required (1–5)
+* `comment` optional but requires rating if provided
+* Masters **cannot** review other masters
 
 ---
 
-### 2. **Review-ların göstərilməsi**
+### 2. **Get Reviews**
 
-masterin bütün review-ları `GET {base_url}/public/get-master/{id}` endpointindən alınır və frontenddə masterin profili və ya detalları göstərilərkən görünür.
+Reviews are included in:
 
----
-
-**Qeyd:**
-
-* Müştəri yalnız ulduz verə bilər, amma şərh yazarsa, ulduz vermək mütləqdir.
-* masterlər review verə bilməz.
+```
+GET {base_url}/public/get-master/{id}
+```
 
 ---
 
----
+## 🕒 Schedule API (For Masters)
 
-## 📅 Schedule (İş Qrafiki) API - master üçün
-
-masterlər öz iş saatlarını idarə etmək üçün bu endpointlərdən istifadə edirlər.
-
----
-
-### 1. **Yeni iş qrafiki yaratmaq**
+### 1. **Create Work Schedule**
 
 **Endpoint:**
 
@@ -884,16 +620,6 @@ POST {base_url}/master/create-schedule
 
 ```json
 {
-  "dayOfWeek": "MONDAY",    // "TUESDAY", "WEDNESDAY" və s.
-  "startTime": "09:00:00",
-  "endTime": "17:00:00"
-}
-```
-
-**Response:**
-
-```json
-{
   "dayOfWeek": "MONDAY",
   "startTime": "09:00:00",
   "endTime": "17:00:00"
@@ -902,7 +628,7 @@ POST {base_url}/master/create-schedule
 
 ---
 
-### 2. **Mövcud iş qrafikini yeniləmək**
+### 2. **Update Schedule**
 
 **Endpoint:**
 
@@ -910,25 +636,12 @@ POST {base_url}/master/create-schedule
 PATCH {base_url}/master/update-schedule/{id}
 ```
 
-* `{id}` — Yenilənəcək iş qrafikinin ID-si
-
 **Request Body:**
-
-* Entity strukturuna uyğun, dinamik olaraq dəyişə bilər (məsələn, `dayOfWeek`, `startTime`, `endTime`)
-
-**Response:**
-
-```json
-{
-  "dayOfWeek": "MONDAY",
-  "startTime": "09:00:00",
-  "endTime": "17:00:00"
-}
-```
+Update fields dynamically (`dayOfWeek`, `startTime`, `endTime`).
 
 ---
 
-### 3. **İş qrafikini silmək**
+### 3. **Delete Schedule**
 
 **Endpoint:**
 
@@ -936,27 +649,11 @@ PATCH {base_url}/master/update-schedule/{id}
 DELETE {base_url}/master/delete-schedule/{id}
 ```
 
-* `{id}` — Silinəcək iş qrafikinin ID-si
-
-**Response:**
-
-* Boş (void), heç bir data qaytarılmır
-
 ---
 
-Bu endpointlər masterlərə öz iş günlərini və saatlarını rahat idarə etməyə imkan verir.
+## 💇 Service API (For Masters)
 
----
-
-Aşağıda **Service API** üçün README.md hissəsini hazırladım:
-
----
-
-## 💈 Service API - masterin Təklif Etdiyi Xidmətlər
-
----
-
-### 1. **Yeni xidmət yaratmaq**
+### 1. **Create Service**
 
 **Endpoint:**
 
@@ -969,27 +666,15 @@ POST {base_url}/master/create-service
 ```json
 {
   "serviceType": "HAIRCUT",
-  "description": "A classic men's haircut with a modern touch.",
+  "description": "A classic men's haircut.",
   "durationMinutes": 45,
   "price": 35.00
 }
 ```
 
-**Response:**
-
-```json
-{
-  "id": 101,
-  "serviceType": "HAIRCUT",
-  "description": "A stylish haircut tailored to your preferences.",
-  "durationMinutes": 45,
-  "price": 30.00
-}
-```
-
 ---
 
-### 2. **Mövcud xidməti yeniləmək**
+### 2. **Update Service**
 
 **Endpoint:**
 
@@ -997,27 +682,11 @@ POST {base_url}/master/create-service
 PATCH {base_url}/master/update-service/{id}
 ```
 
-* `{id}` — Yenilənəcək xidmətin ID-si
-
-**Request Body:**
-
-* Entity strukturuna uyğun dəyişikliklər (məsələn, `serviceType`, `description`, `durationMinutes`, `price`)
-
-**Response:**
-
-```json
-{
-  "id": 101,
-  "serviceType": "HAIRCUT",
-  "description": "A stylish haircut tailored to your preferences.",
-  "durationMinutes": 45,
-  "price": 30.00
-}
-```
+**Request Body:** dynamic updates (`serviceType`, `description`, `durationMinutes`, `price`)
 
 ---
 
-### 3. **Xidməti silmək**
+### 3. **Delete Service**
 
 **Endpoint:**
 
@@ -1025,15 +694,9 @@ PATCH {base_url}/master/update-service/{id}
 DELETE {base_url}/master/delete-service/{id}
 ```
 
-* `{id}` — Silinəcək xidmətin ID-si
-
-**Response:**
-
-* Boş (void), heç bir data qaytarılmır
-
 ---
 
-### 4. **Xidmətin təfərrüatlarını oxumaq**
+### 4. **Get Service Details**
 
 **Endpoint:**
 
@@ -1041,16 +704,9 @@ DELETE {base_url}/master/delete-service/{id}
 GET {base_url}/master/read-service/{id}
 ```
 
-* `{id}` — Xidmətin ID-si
-
-**Qeyd:**
-
-* Bu endpoint frontend-də xidmətin detallarını göstərmək üçün istifadə olunur.
-* Gələcəkdə silinə bilər, çünki məntiq olaraq master profilində göstərilən xidmətlərlə birlikdə gəlməsi daha faydalıdır.
-
 ---
 
-### 5. **masterin bütün xidmətlərini oxumaq (gələcəkdə silinə bilər)**
+### 5. **Get All Services (Optional)**
 
 **Endpoint:**
 
@@ -1058,50 +714,28 @@ GET {base_url}/master/read-service/{id}
 GET {base_url}/master/read-services/
 ```
 
-* Bu endpoint masterin bütün xidmətlərini oxumaq üçün nəzərdə tutulub, amma məntiqi səbəbdən frontend-də istifadə etmək tövsiyə edilmir.
-* Xidmətlər, review-lar və cədvəllər (`schedules`) bir yerdə profil ekranına yüklənməsi daha uyğundur.
-
----
-```
-
-```
+*Returns all services for the logged-in master (may be deprecated in the future).*
 
 ---
 
-## ⚠️ Problemlər və Gələcək Təkmilləşdirmələr
+## ⚠️ Known Issues and Future Improvements
 
-### 1. **Review-ların idarəsi**
+1. **Review Management**
 
-* İstifadəçi artıq ulduz və ya review vermişsə, onun təkrar review verməsinin qarşısı alınmalıdır.
-* İstifadəçilərə mövcud review-larını redaktə etmək imkanı əlavə edilməlidir ki, eyni şəxs yüzlərlə review göndərə bilməsin.
+  * Prevent duplicate reviews from the same user.
+  * Allow users to edit their existing reviews.
 
-### 2. **Profilin silinməsi**
+2. **Profile Deletion**
 
-* İstifadəçilər və masterlər üçün profil silmək funksiyası əlavə edilməlidir.
-* Bu, hesabların idarəsi və təhlükəsizliyi baxımından vacibdir.
+  * Add delete-account feature for users and masters.
 
-### 3. **master axtarışı (search) funksiyası**
+3. **Master Search**
 
-* masterləri ada görə axtarmaq funksiyası əlavə olunmalıdır.
-* Bu, istifadəçilərin sevdikləri masterləri daha asan tapması üçün önəmlidir.
+  * Add search by name feature for easy discovery.
 
-### 4. **Appointment vaxtının idarəsi**
+4. **Appointment Time Handling**
 
-* Hazırda rezervasiya zamanı yalnız başlanğıc vaxtı təyin olunur.
-* Rezervasiyanın bitmə vaxtı (end time) hesablanmır və göstərilmir.
-* Gələcəkdə end time servis müddətinə əsaslanaraq backend tərəfindən avtomatik hesablanmalıdır.
-* Servislərin hər birinin müddətinə əlavə olaraq 10 dəqiqə tampon vaxt əlavə edilə bilər.
-
-
+  * Implement automatic calculation of `endTime` based on service durations and a 10-minute buffer.
 
 ---
-
-
-
-
-
-
-
-
-
 
