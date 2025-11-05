@@ -28,7 +28,7 @@ public class JwtService {
     // Token generation with role claim
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("role", user.getRole().name()); // "BARBER", "CUSTOMER" və s.
+        claims.put("role", user.getRole().name());
 
         return Jwts.builder()
                 .claims(claims)
