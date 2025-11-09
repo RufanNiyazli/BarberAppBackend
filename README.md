@@ -738,4 +738,6 @@ GET {base_url}/master/read-services/
   * Implement automatic calculation of `endTime` based on service durations and a 10-minute buffer.
 
 ---
+## License
 
+This project is licensed under the [MIT License](LICENSE).
